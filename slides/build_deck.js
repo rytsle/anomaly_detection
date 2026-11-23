@@ -1,5 +1,5 @@
 // Midterm deck (Lithuanian, 7 slides + 1 backup). Build: NODE_PATH=<dir with pptxgenjs> node build_deck.js
-// Figures come from make_figs.py (run it from anomaly_detection/). Numbers come from ../../experiments_anomaly.csv and the paper.
+// Figures come from make_figs.py (run it from anomaly_detection/). Numbers come from ../experiments_anomaly.csv and the paper.
 const pptxgen = require("pptxgenjs");
 const { applyTheme } = require(process.env.PPTX_SKILL_DIR + "/scripts/apply_theme.js");
 

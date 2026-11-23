@@ -1,0 +1,8 @@
+# Python 3.13. Versions are the ones the notebooks were run with.
+ipykernel==7.3.0
+matplotlib==3.11.1
+numpy==2.5.2
+pandas==3.0.5
+scikit-learn==1.9.1
+seaborn==0.13.2
+torch==2.13.0

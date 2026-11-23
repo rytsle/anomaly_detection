@@ -9,7 +9,7 @@ import torch.nn as nn
 
 dev = torch.device("cpu")     # these models are tiny: on this machine the CPU is ~4x faster than MPS (checked)
 DATA = Path("original")
-LOG_CSV = "../experiments_anomaly.csv"     # every trained model appends rows here (the folder of the other labs)
+LOG_CSV = "experiments_anomaly.csv"     # every trained model appends rows here (in this repo)
 IMU = ["ACC_x_RMS", "ACC_y_RMS", "ACC_z_RMS", "MAG_x_RMS", "MAG_y_RMS", "MAG_z_RMS"]
 PAPER11 = ["GPS_alt", "GPS_speed", "GPS_num_sats", "ACC_x_RMS", "ACC_y_RMS", "ACC_z_RMS", "ACC_samples",
            "MAG_x_RMS", "MAG_y_RMS", "MAG_z_RMS", "MAG_samples"]        # everything except time, lat, lon (the paper's NO-GPS set)

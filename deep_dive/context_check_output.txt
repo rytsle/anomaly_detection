@@ -1,0 +1,15 @@
+A) 1082 test rows scored by every model (rows that end a valid 20-row window); 42% of them are within +-1 min of an anomaly
+
+model                                              AUROC mean+-sd   AUPRC mean+-sd   (chance AUROC 0.5, chance AUPRC 0.42)
+single row, dense AE, 11 cols (paper's EDGE)       0.752 +-0.002     0.655 +-0.011
+single row, dense AE, 6 IMU                        0.710 +-0.002     0.685 +-0.005
+window 5 flattened, dense AE                       0.784 +-0.011     0.735 +-0.008
+window 10 flattened, dense AE                      0.823 +-0.006     0.758 +-0.009
+window 20 flattened, dense AE                      0.823 +-0.001     0.711 +-0.008
+window 5, GRU AE                                   0.814 +-0.002     0.773 +-0.003
+window 10, GRU AE                                  0.837 +-0.001     0.779 +-0.003
+window 20, GRU AE                                  0.829 +-0.001     0.713 +-0.001
+
+B) GRU AE, window 10, 6 IMU: training windows with a gravity-axis switch removed or not (same test rows/labels as A)
+all training windows     train windows  11203  AUROC 0.837 +-0.001  AUPRC 0.779 +-0.003
+clean training           train windows  10987  AUROC 0.839 +-0.001  AUPRC 0.782 +-0.002

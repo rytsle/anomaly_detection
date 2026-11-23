@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECMI 2026: gilus pasinėrimas</title>
+<style>
+:root{
+  --bg:#ffffff; --ink:#1f2933; --mute:#6b7280; --line:#e5e7eb; --card:#f3f4f6;
+  --teal:#1b998b; --orange:#e4572e; --amber:#f2b134; --code:#eef2f3; --nav:#1f2933; --red:#c1121f;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --red:#ff6b6b; --bg:#161b22; --ink:#e6e8eb; --mute:#9aa4b2; --line:#2d3540; --card:#1f2630; --code:#222b36; --nav:#0f1318; }
+}
+:root[data-theme="dark"]{ --red:#ff6b6b; --bg:#161b22; --ink:#e6e8eb; --mute:#9aa4b2; --line:#2d3540; --card:#1f2630; --code:#222b36; --nav:#0f1318; }
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 Calibri,"Segoe UI",system-ui,sans-serif}
+nav{position:fixed;inset:0 auto 0 0;width:250px;background:var(--nav);color:#d1d5db;padding:24px 18px;overflow:auto}
+nav h2{font:700 15px Cambria,Georgia,serif;color:#fff;margin:0 0 14px}
+nav a{display:block;color:#d1d5db;text-decoration:none;padding:6px 8px;border-radius:6px;font-size:15px}
+nav a:hover{background:#2a323d;color:#fff}
+nav button{margin-top:16px;background:#2a323d;color:#d1d5db;border:0;border-radius:6px;padding:6px 10px;cursor:pointer}
+main{margin-left:250px;padding:40px 48px 120px;max-width:1010px}
+h1{font:700 40px/1.15 Cambria,Georgia,serif;margin:0 0 8px}
+h2{font:700 29px/1.2 Cambria,Georgia,serif;margin:64px 0 10px;padding-top:14px}
+h3{font:700 20px/1.3 Calibri,sans-serif;margin:30px 0 6px;color:var(--teal)}
+p{margin:10px 0}
+.lead{font-size:19px;color:var(--mute)}
+.box{background:var(--card);border-radius:10px;padding:14px 18px;margin:16px 0}
+.box b.t{display:block;margin-bottom:4px}
+.box.warn{border-left:0;background:color-mix(in srgb,var(--orange) 11%,var(--card))}
+.box.ok{background:color-mix(in srgb,var(--teal) 11%,var(--card))}
+code,pre{font-family:Consolas,Menlo,monospace;font-size:15px;background:var(--code);border-radius:5px}
+code{padding:1px 5px}
+pre{padding:12px 16px;overflow:auto;line-height:1.5}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:15.5px}
+th,td{border-bottom:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{font-weight:700;background:var(--card)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hl td{background:color-mix(in srgb,var(--teal) 14%,transparent);font-weight:600}
+img{max-width:100%;border-radius:8px;border:1px solid var(--line);background:#fff}
+details{margin:12px 0;border:1px solid var(--line);border-radius:10px;padding:2px 16px}
+summary{cursor:pointer;font-weight:700;padding:10px 0}
+.q{font-weight:700}
+.row{display:flex;gap:18px;flex-wrap:wrap}
+.row>*{flex:1 1 300px}
+.tag{display:inline-block;font-size:13px;font-weight:700;padding:1px 8px;border-radius:99px;background:var(--teal);color:#fff;vertical-align:middle;margin-left:6px}
+.tag.o{background:var(--orange)}
+.widget{border:2px solid var(--teal);border-radius:12px;padding:16px 18px;margin:20px 0}
+.widget h4{margin:0 0 8px;font:700 18px Calibri,sans-serif;color:var(--teal)}
+.ctl{display:grid;grid-template-columns:150px 1fr 70px;gap:8px 12px;align-items:center;margin:6px 0}
+.ctl input[type=range]{width:100%}
+.bars{display:grid;grid-template-columns:90px 1fr 60px;gap:5px 10px;align-items:center;font-size:15px}
+.bar{height:15px;border-radius:4px;background:var(--teal)}
+.bar.a{background:var(--orange)}
+.bar.sum{background:var(--ink)}
+.stat{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.stat div{background:var(--card);border-radius:8px;padding:8px 14px;min-width:96px}
+.stat b{display:block;font:700 24px Cambria,serif}
+canvas{width:100%;height:330px;display:block;border-radius:8px;background:var(--card)}
+.mute{color:var(--mute)}
+.rq{color:var(--red);font-weight:700}
+.qbox{border:2px solid var(--red);border-radius:12px;padding:4px 20px 14px;margin:26px 0}
+.qbox h3.rq{margin:14px 0 8px;font:700 21px/1.3 Calibri,sans-serif}
+.short{background:color-mix(in srgb,var(--red) 9%,var(--card));border-radius:8px;padding:9px 14px;margin:8px 0 12px}
+.qnav a{color:var(--red)!important;font-weight:700}
+@media (max-width:900px){nav{display:none}main{margin:0;padding:24px 18px 80px}.ctl{grid-template-columns:110px 1fr 60px}}
+</style>
+</head>
+<body>
+<nav>
+<h2>Turinys</h2>
+<a href="#s0">0. Trumpai</a>
+<a href="#sq" class="qnav" style="color:#ff6b6b;font-weight:700">Q. Tavo klausimai</a>
+<a href="#s1">1. Uždavinys</a>
+<a href="#s2">2. Fizika nuo nulio</a>
+<a href="#s3">3. Duomenys</a>
+<a href="#s4">4. Straipsnis</a>
+<a href="#s5">5. Autoenkoderis ir GRU</a>
+<a href="#s6">6. Mūsų rezultatai</a>
+<a href="#s7">7. Toliau</a>
+<a href="#s8">8. Klausimai ir atsakymai</a>
+<a href="#s9">9. Žodynėlis</a>
+<button id="theme">Šviesi / tamsi</button>
+</nav>
+<main>
+
+<h1>ECMI 2026: anomalijų aptikimas</h1>
+<p class="lead">Gilus pasinėrimas visiems, kas bus skaidrėse: nuo fizikos pagrindų iki rezultatų ir sunkių klausimų. Du interaktyvūs langai (2.6 ir 6.2 dalyse) leidžia pačiam „pajudinti“ fiziką ir slenkstį.</p>
+
+<h2 id="s0">0. Trumpai</h2>
+<div class="box ok">
+<ul>
+<li><b>Uždavinys.</b> Automobilyje važiuojanti dėžė turi jutiklius (GPS, akselerometras, magnetometras). Reikia rasti momentus, kai rodmenys neatitinka įprasto elgesio. Mokymo duomenys neturi etikečių.</li>
+<li><b>Ką iš tikrųjų reiškia „anomalija“.</b> Konkurso tekste: genda jutiklis. Duomenų straipsnyje: dėžė tyčia purtoma ir verčiama. IMU požiūriu tai atrodo vienodai.</li>
+<li><b>Ką naudojame.</b> 6 stulpeliai: pagreitis ir magnetinis laukas trimis ašimis (RMS per ~10 s intervalą).</li>
+<li><b>Ką padarė straipsnio autoriai.</b> Autoenkoderius (jutiklyje ir serveryje). Geriausias serverio modelis F1 ≈ 0,82, jutiklio modelis ≈ 0,70.</li>
+<li><b>Ką gavome mes.</b> Paprastas GRU autoenkoderis (langas 10 eilučių) duoda F1 ≈ 0,82 (tikslumas 0,74, pilnumas 0,92), be jokios fizikos.</li>
+<li><b>Trys aplinkybės, kurias reikia žinoti.</b> (1) Straipsnio tekste slenkstis yra didžiausia mokymo klaida, o kode 95 procentilė (tik su šia reproduktuojami jų skaičiai). (2) <b>Straipsnio F1 metrika yra „dosni“</b>: detektorius, kuris visada sako „anomalija“, gauna F1 0,95–0,99, nes iš eilės einantys klaidingi aliarmai sujungiami į vieną. Todėl 0,82 galima naudoti tik palyginimui su straipsniu, ne kaip absoliučią kokybę (žr. 6.3). (3) Nežinome, kiek mūsų rezultato yra tikras įvykių aptikimas, o kiek tiesiog „neramių“ sesijų atpažinimas.</li>
+</ul>
+</div>
+
+{{QUESTIONS}}
+
+<!-- ======================================================= 1 -->
+<h2 id="s1">1. Uždavinys</h2>
+<h3>1.1 Kas yra anomalijų aptikimas</h3>
+<p>Dažniausiai mokome klasifikatorių: duodame pavyzdžius su etiketėmis „normalu“ ir „anomalija“. Čia etikečių mokymo metu nėra, be to, anomalijų niekas nesužymėjo. Todėl naudojamas <b>naujumo aptikimas</b> (angl. <i>novelty detection</i>): modelis išmoksta, kaip atrodo normalūs duomenys, o viskas, kas stipriai nuo jų nukrypsta, laikoma anomalija.</p>
+<div class="box"><b class="t">Svarbi subtilybė</b>Mokymo duomenys „normalūs“ tik iš principo. Kaip matysime, juose yra apie 77 atvejus, kai dėžė apversta (gravitacijos ašis pakeitė vietą). Modelis gali išmokti, kad tai normalu. Išmatavome, kad tai kenkia mažai (žr. Q5).</div>
+
+<h3>1.2 Konkurso sąlygos (ECMI 2026)</h3>
+<table>
+<tr><th>Punktas</th><th>Reikšmė</th></tr>
+<tr><td>Komanda</td><td>1–4 studentai (bakalauras, magistras ar doktorantūra) iš ECMI narių institucijos; vienas narys pristato</td></tr>
+<tr><td>Ką pateikti</td><td>Ataskaita PDF anglų kalba, ne daugiau kaip 12 puslapių (strategija, metodika, rezultatų interpretacija, išvados) ir kodas (MATLAB/Octave, Julia, C, Python ar R)</td></tr>
+<tr><td>Kaip vertina</td><td>Požiūrio originalumas, įgyvendinimo kokybė, rezultatų kokybė, ataskaitos kokybė; DI naudojimas turi būti atskleistas ir paaiškintas</td></tr>
+<tr><td>Terminai</td><td>Užduotis paskelbta 2026-06-27, registracija iki 2026-10-15, darbas iki 2027-02-28, nugalėtojai 2027-05-15</td></tr>
+<tr><td>Prizas</td><td>1000 EUR ir kvietimas pristatyti 40-ojoje ECMI Modelling Week (Wuppertalis)</td></tr>
+</table>
+
+<h3>1.3 Du aprašymai to paties dalyko</h3>
+<div class="row">
+<div class="box"><b class="t">Konkurso tekstas</b>Genda jutiklis, todėl pagreičio ir magnetinio lauko rodmenys neatitinka transporto priemonės judėjimo.</div>
+<div class="box"><b class="t">Duomenų straipsnis (Savic ir kt., 2021)</b>Testo duomenyse yra tyčia sukelti įvykiai: dėžė purtoma ir verčiama. Vietos anomalijų nėra.</div>
+</div>
+<p>Abiem atvejais IMU rodo tai, ko važiavimas nepaaiškina. Straipsnis yra duomenų „tiesa“, todėl žiūrime į anomalijas kaip į dėžės purtymą ir vertimą, bet metodas turėtų tikti ir tikram sugedusiam jutikliui.</p>
+
+<h3>1.4 Kaip vertinama</h3>
+<p>Testo faile yra 39 laiko žymos (<code>anomalies.timestamps</code>), nėra eilutės lygio etikečių. Todėl vertinama <b>įvykių lygiu</b>: kiek žymų aptikta ir kiek klaidingų aliarmų. Tikslią taisyklę aprašome 4.4 dalyje.</p>
+
+<!-- ======================================================= 2 -->
+<h2 id="s2">2. Fizika nuo nulio</h2>
+<h3>2.1 Jutikliai ir kiek dažnai jie matuoja</h3>
+<p><b>IMU</b> (inercinis matavimo vienetas) yra lustas, kuris matuoja judėjimą. Mūsų duomenyse yra du jo jutikliai: <b>akselerometras</b> (pagreitis) ir <b>magnetometras</b> (magnetinis laukas). Giroskopo (sukimosi greičio) duomenų faile nėra. <b>GNSS</b> yra palydovinė padėties sistema (GPS jos dalis), duodanti platumą, ilgumą, aukštį, greitį ir matomų palydovų skaičių.</p>
+<p>IMU matuoja maždaug kas <b>15 ms</b> (~67 kartus per sekundę), GPS kas ~<b>10 s</b>. Į lentelę patenka ne žaliavinis signalas, o <b>kiekvieno GPS intervalo santrauka</b>: viena eilutė apima ~546–670 IMU mėginių (546 × 15 ms ≈ 8 s; sausį 670 × 15 ms ≈ 10 s).</p>
+
+<h3>2.2 Akselerometras nejudėdamas rodo ne nulį</h3>
+<p>Akselerometras iš tikrųjų matuoja jėgą, kuria atrama laiko jutiklį. Ant stalo gulintis jutiklis rodo apie <b>+9,81 m/s²</b> kryptimi į viršų (g, laisvojo kritimo pagreitis). Tik laisvai krintantis jutiklis rodytų 0. Todėl <b>ramybės būsenoje pagreičio vektoriaus ilgis visada ≈ 9,81</b>, o judėdamas jis šiek tiek svyruoja.</p>
+<h3>2.3 Ašys ir „gravitacijos ašis“</h3>
+<p>Ašys x, y, z yra pririštos prie lusto, ne prie pasaulio. Dėžei gulint, beveik visas 9,8 patenka į vieną ašį. Ją vadiname <b>gravitacijos ašimi</b> (ašis su didžiausiu ACC RMS). Apverčiant dėžę šios ašies pasikeitimas yra aiškus požymis. Mūsų duomenyse gravitacijos ašis yra z maždaug 90 % mokymo ir 82 % testo eilučių.</p>
+
+<h3>2.4 Magnetometras, µT ir kodėl magnetinis laukas „plaukia“</h3>
+<p>Magnetometras kaip trimatis kompasas matuoja lauką mikroteslomis (µT). Žemės laukas Novi Sade yra maždaug 45–50 µT ir rodo nuolat ta pačia kryptimi pasaulio atžvilgiu. Mūsų duomenyse |B| svyruoja nuo ~15 iki ~170 µT, o sesijų vidurkiai nuo ~25 iki ~123 µT, taigi matuojame ne tik Žemės lauką:</p>
+<ul>
+<li><b>Kietoji geležis</b> (angl. <i>hard iron</i>): pastovūs magnetai ar įmagnetintas metalas šalia jutiklio prideda <i>pastovų vektorių, kuris sukasi kartu su dėže</i>.</li>
+<li><b>Minkštoji geležis</b> (angl. <i>soft iron</i>): metalas, kuris pats nėra magnetas, bet iškreipia pro jį einantį lauką (pavyzdžiui, automobilio kėbulas).</li>
+</ul>
+<p>Todėl vieno bendro lygio negalima tikėtis, o skirtingose sesijose (kai dėžė padėta kitaip ar kitoje vietoje) |B| lygis skiriasi.</p>
+
+<h3>2.5 RMS ir vektoriaus ilgis</h3>
+<p><b>RMS</b> (šaknis iš kvadratų vidurkio): <code>RMS = √( (x₁² + x₂² + … + xₙ²) / n )</code>. Kvadratas pašalina ženklą. Naudingas sąryšis: <code>RMS² = vidurkis² + dispersija</code>, taigi vienas skaičius <i>sumaišo pastovią dalį (sunkį) ir virpesius</i>.</p>
+<p><b>Vektoriaus ilgis</b> (norma): <code>|a| = √(aₓ² + a_y² + a_z²)</code>. Jei turime kiekvienos ašies RMS, tai <code>√(RMSₓ² + RMS_y² + RMS_z²)</code> yra tiksliai RMS reikšmė iš |a| per intervalą. Mūsų kode tai kintamieji <code>acc</code> ir <code>mag</code>.</p>
+<h3>2.6 Sukimosi nekintamumas ir kodėl magnetinis laukas jo neturi</h3>
+<p>Vektoriaus ilgis nekinta jį pasukus. Todėl |a| ≈ g nepriklauso nuo to, kaip dėžė guli. Tas pats turėtų galioti |B|, bet tik jei nėra kietosios geležies: tada dėžės pasukimas pakeičia, kaip prie Žemės lauko prisideda pastovus kietosios geležies vektorius, ir |B| kinta. Pamatykite patys:</p>
+
+<div class="widget" id="wA">
+<h4>Interaktyvus langas A: pasukite dėžę</h4>
+<div class="ctl"><label>Posūkis θ</label><input id="aT" type="range" min="0" max="360" value="0"><span id="aTv"></span></div>
+<div class="ctl"><label>Kietoji geležis (µT)</label><input id="aH" type="range" min="0" max="60" value="0"><span id="aHv"></span></div>
+<div class="ctl"><label>Purtymas (m/s² / ašį)</label><input id="aS" type="range" min="0" max="40" value="0"><span id="aSv"></span></div>
+<div class="row">
+<div><b>Akselerometras (RMS, m/s²)</b><div class="bars" id="aA"></div></div>
+<div><b>Magnetometras (RMS, µT)</b><div class="bars" id="aB"></div></div>
+</div>
+<p class="mute" id="aNote"></p>
+<p class="mute" style="font-size:15px">Modelis: dėžė sukasi apie y ašį; Žemės laukas (22; 0; −43) µT, tai ~48 µT; kietosios geležies vektorius yra x ašyje. Purtymas prideda atsitiktinį virpesį kiekvienai ašiai: RMS ašiai = √(vidurkis² + s²).</p>
+</div>
+<div class="box"><b class="t">Ką pastebėti</b>(1) Su h = 0 |B| lieka ≈ 48 µT, kad ir kaip sukate. Padidinkite h ir |B| pradeda svyruoti. (2) Su purtymu |a| tampa √(g² + 3s²), tada <i>dinaminis pagreitis</i> √(|a|² − g²) = √3·s. (3) Kai sukate apie ~45°, gravitacijos ašis pasikeičia: tai ir yra „apvertimas“, kurį matome duomenyse.</div>
+
+<h3>2.7 GPS greitis ir vienetai</h3>
+<p>Faile greičio vienetas nenurodytas. Palyginę su atstumu tarp dviejų GPS taškų (sausio važiavimai), gavome, kad nurodytas greitis yra maždaug 2 kartus didesnis nei m/s, o mazgas yra 1,94 karto daugiau nei m/s. Todėl <b>tikėtina, kad tai mazgai</b>, bet tai yra išvada, ne dokumentuotas faktas. Kovo duomenyse greitis visada 0, nors padėtis keičiasi.</p>
+<p class="mute">Papildomai: iš GPS greičio pokyčio (dv/dt, ilgiamė pagreitis) galima palyginti su IMU pagreičiu, bet pastarasis tinka tik sausio duomenims.</p>
+
+<!-- ======================================================= 3 -->
+<h2 id="s3">3. Duomenys</h2>
+<h3>3.1 Failai</h3>
+<table>
+<tr><th>Failas</th><th class="n">Eilučių</th><th>Turinys</th></tr>
+<tr><td><code>training.csv</code></td><td class="n">12 678</td><td>Be etikečių; 1 470 eilučių sausio, 11 208 kovo</td></tr>
+<tr><td><code>test.csv</code></td><td class="n">1 571</td><td>318 sausio, 1 253 kovo</td></tr>
+<tr><td><code>anomalies.timestamps</code></td><td class="n">39</td><td>Anomalijų laiko žymos testo duomenyse (10 d. 2021-01-21, o likusios kovo 21–23 d.)</td></tr>
+</table>
+<p>Taip pat yra autorių Python kodas (<code>Dataset.py</code>, <code>TFAutoAD.py</code>, <code>verify.py</code>, <code>experiments.py</code>), kurį naudojome kaip tiesą apie jų vertinimą.</p>
+
+<h3>3.2 Stulpeliai ir ką naudojame</h3>
+<table>
+<tr><th>Stulpelis</th><th>Reikšmė</th><th>Naudojame?</th></tr>
+<tr><td><code>timestamp</code></td><td>Eilutės laikas. Sausį ~10 s žingsnis. Kovą laikas apvalintas iki minutės: ~5–6 eilutės turi tą pačią žymą</td><td>Tik tvarkai ir susiejimui su anomalijomis</td></tr>
+<tr><td><code>GPS_lat</code>, <code>GPS_lon</code></td><td>Padėtis; 0, 0 reiškia, kad nėra GPS fiksacijos (924 mokymo, 190 testo eilučių)</td><td>Ne</td></tr>
+<tr><td><code>GPS_alt</code></td><td>Aukštis (m); 9 eilutės su neigiamomis reikšmėmis</td><td>Tik palyginime (11 stulpelių)</td></tr>
+<tr><td><code>GPS_speed</code></td><td>Greitis (tikėtina mazgai); kovo mėn. visada 0</td><td>Tik palyginime</td></tr>
+<tr><td><code>GPS_num_sats</code></td><td>Matomų palydovų skaičius</td><td>Tik palyginime</td></tr>
+<tr><td><code>ACC_x/y/z_RMS</code></td><td>Pagreičio RMS per intervalą, m/s²</td><td><b>Taip</b></td></tr>
+<tr><td><code>MAG_x/y/z_RMS</code></td><td>Magnetinio lauko RMS per intervalą, µT</td><td><b>Taip</b></td></tr>
+<tr><td><code>ACC_samples</code>, <code>MAG_samples</code></td><td>Kiek mėginių suvidurkinta (visada vienodi; ~546, sausį ~670; 3 mokymo eilutės su &gt;10 000)</td><td>Tik palyginime</td></tr>
+</table>
+<div class="box ok"><b class="t">Kodėl šeši IMU stulpeliai</b>
+(1) Straipsnis sako, kad anomalijos yra dėžės purtymas ir vertimas, o tai matuoja tik pagreitis ir magnetinis laukas. (2) GPS stulpeliai arba nieko nesako (kovo mėn. greitis 0), arba rodo palydovus, ne dėžę; vietos anomalijų testo duomenyse nėra. (3) Mėginių skaičiai yra intervalo ilgis, ne signalas. (4) Straipsnio rinkinio (visi, išskyrus laiką, platumą ir ilgumą, 11 stulpelių) palyginimui paleidome atskirai: rezultatas šiek tiek prastesnis (F1 0,79 vs 0,82, vienas paleidimas).</div>
+
+<h3>3.3 Ką parodė tyrimas</h3>
+<p>Žemiau kairėje yra 20 min. ištrauka su anomalijomis (raudonos linijos). Dešinėje magnetinio lauko |B| pasiskirstymas kiekvienoje sesijoje (sesija yra eilutės be didesnių nei 5 min. tarpų).</p>
+<div class="row">
+<div><img alt="Pagreitis ir magnetinis laukas aplink anomalijas" src="{{IMG_ANOMALY}}"></div>
+<div><img alt="Magnetinio lauko lygis pagal sesijas" src="{{IMG_SESSIONS}}"></div>
+</div>
+<ul>
+<li>Gravitacijos ašis keičiasi tiksliai ties 26 iš 39 anomalijų (±1 min.). Testo duomenyse yra 44 tokie pasikeitimai, 30 jų šalia anomalijų; mokymo duomenyse jų 77.</li>
+<li>|B| vidurkių standartinis nuokrypis tarp sesijų ~22 µT, o sesijos viduje tipiškai ~6 µT (73 sesijos, kuriose ≥ 30 eilučių).</li>
+<li>Tik 5 iš 39 anomalijų įvyko važiuojant (greitis &gt; 1 m/s); kitos stovint.</li>
+<li>30,5 % testo eilučių yra per ±1 min. nuo kokios nors anomalijos (nes kovo laikas apvalintas), taigi žymos yra „grubios“.</li>
+<li>Kovo 23 d. (20 iš 39) ir sausio 21 d. (10) sutelkia daugiausia anomalijų, ir tose sesijose magnetinis laukas kinta labiausiai.</li>
+</ul>
+
+<h3>3.4 Duomenų keistenybės, kurias reikėjo sutvarkyti</h3>
+<ul>
+<li><b>Trys laiko formatai</b>: <code>2021-01-22 08:47:55</code>, <code>10-03-21 13:53</code> (DD-MM-YY) ir <code>2023-03-21 13:43:00</code>, kur „2023“ iš tikrųjų reiškia 23 kovo 2021 (tas pats ir anomalijų faile). Mes juos iššifravome, kad grafikai ir laikai būtų teisingi.</li>
+<li><b>Nesutvarkytas mokymo failas</b>: laikas ne visur auga.</li>
+<li><b>Autorių filtras</b>: jų kodas išmeta eilutes be GPS fiksacijos, su neigiamu aukščiu ar &gt; 10 000 mėginių (935 mokymo, 191 testo), net kai GPS nenaudojamas. Mes darome taip pat, kad rezultatai būtų palyginami.</li>
+<li><b>Langai</b>: langas laikomas tinkamu, jei neturi išmestų eilučių ir jo trukmė ne ilgesnė nei 1 val.</li>
+</ul>
+
+<!-- ======================================================= 4 -->
+<h2 id="s4">4. Straipsnis: Savic ir kt. (2021)</h2>
+<p><i>Deep Learning Anomaly Detection for Cellular IoT with Applications in Smart Logistics</i>, IEEE Access, doi 10.1109/ACCESS.2021.3072916. Autoriai iš Novi Sado universiteto ir operatoriaus VIP Mobile.</p>
+<h3>4.1 Ką jie siūlo</h3>
+<p>Anomalijų aptikimas kaip paslauga mobiliojo tinklo (NB-IoT) architektūroje, dviem lygiais. Kiekvienas lygis yra „ADM“ (angl. <i>Anomaly Detection Module</i>, anomalijų aptikimo modulis); plačiau Q13:</p>
+<ul>
+<li><b>ADM-EDGE</b>: mažas autoenkoderis pačiame įrenginyje (ARM Cortex-M0+, 16 MHz, 32 KB RAM). Mato <b>vieną eilutę</b> (GPS reikšmės + IMU RMS). Atsakymas per vieną intervalą.</li>
+<li><b>ADM-FOG</b>: didesnis autoenkoderis serveryje. Mato <b>paskutines L eilučių</b>, sujungtas į vieną ilgą vektorių (L = 2…20). Atsakymas vėluoja L intervalų, bet tikslesnis.</li>
+<li>Kai edge modelio „pasitikėjimas“ mažesnis nei 0,75, sprendimą perduoda fog modeliui.</li>
+</ul>
+<h3>4.2 Modelis</h3>
+<p>Tankusis (pilnai sujungtas) autoenkoderis su ReLU: 1 paslėptas sluoksnis (n/2 neuronų), 3 (n/2, n/4, n/2) arba 5 sluoksniai. Mokymas: Adam, MSE, paketas 16, ankstyvas sustabdymas po 10 epochų be pagerėjimo, Glorot inicializacija, požymiai standartizuoti. Kiekviena sąranka mokyta 20 kartų ir rezultatai vidurkinami.</p>
+<pre>Err(v) = Σᵢ (vᵢ − v̂ᵢ)²          (atkūrimo klaida)
+slenkstis e → anomalija, jei Err(y) &gt; e</pre>
+<h3>4.3 Palyginimas ir rezultatai</h3>
+<p>Palyginta su 5 PyOD metodais (OCSVM, ABOD, KNN su K = 10, PCA, HBOS) su numatytaisiais parametrais.</p>
+<table>
+<tr><th>Modelis (vienas įrašas)</th><th class="n">P</th><th class="n">R</th><th class="n">F1</th><th>Variantas</th></tr>
+<tr><td>ADM-EDGE-1</td><td class="n">0,710</td><td class="n">0,676</td><td class="n">0,693</td><td>be GPS stulpelių</td></tr>
+<tr><td>ADM-EDGE-3</td><td class="n">0,739</td><td class="n">0,644</td><td class="n">0,688</td><td>be GPS stulpelių</td></tr>
+<tr><td>ADM-EDGE-5</td><td class="n">0,701</td><td class="n">0,697</td><td class="n">0,699</td><td>be GPS stulpelių</td></tr>
+<tr><td>SVM</td><td class="n">0,467</td><td class="n">0,179</td><td class="n">0,259</td><td></td></tr>
+<tr><td>ABOD</td><td class="n">0,488</td><td class="n">1,000</td><td class="n">0,655</td><td></td></tr>
+<tr><td>KNN</td><td class="n">0,500</td><td class="n">0,692</td><td class="n">0,581</td><td></td></tr>
+<tr><td>PCA</td><td class="n">0,714</td><td class="n">0,513</td><td class="n">0,597</td><td></td></tr>
+<tr><td>HBOS</td><td class="n">0,654</td><td class="n">0,436</td><td class="n">0,523</td><td></td></tr>
+<tr class="hl"><td>ADM-FOG-5, L = 17</td><td class="n">0,821</td><td class="n">0,821</td><td class="n">0,821</td><td>be GPS stulpelių</td></tr>
+<tr class="hl"><td>ADM-FOG-5, L = 18</td><td class="n">0,826</td><td class="n">0,846</td><td class="n">0,836</td><td>su GPS stulpeliais</td></tr>
+</table>
+<p>Jų išvada: autoenkoderiai geresni už visus palyginimo metodus; GPS stulpeliai skirtumo beveik nedaro (kaip ir tikėtina, nes testo duomenyse nėra vietos anomalijų); ilgesnis langas padidina F1 apie 7–10 %.</p>
+
+<h3>4.4 Kaip jie skaičiuoja „tikslumą“ ir „pilnumą“ <span class="tag">svarbu</span></h3>
+<p>Autorių <code>verify.py</code> ir <code>experiments.py</code> taisyklė (mes ją perrašėme ir patikrinome: sutampa su originalu ant 12 atsitiktinių aptikimų rinkinių):</p>
+<ol>
+<li>Kiekvienas modelio langas gauna rezultatą: pažymėtas (anomalija) ar ne.</li>
+<li>Pažymėtas langas <b>pataiko</b> į anomaliją, jei nuo (lango pradžios minutė − 1) iki (lango pabaigos minutė + 1, :59) yra pažymėta laiko žyma.</li>
+<li><b>TP</b> = kiek skirtingų pažymėtų anomalijų aptikta (ne kiek langų). <b>Pilnumas (recall) = TP / 39.</b></li>
+<li><b>FP</b> = pažymėti langai, kurie nepataikė į jokią anomaliją; iš eilės einantys klaidingi langai skaičiuojami <b>kaip vienas</b>.</li>
+<li><b>Tikslumas (precision) = TP / (TP + FP)</b>, F1 = 2PR/(P + R).</li>
+</ol>
+<div class="box"><b class="t">Dvi pastabos</b>(a) Langas, kuris apima 10 eilučių, pataiko, jei <i>bet kuri</i> jo dalis arti anomalijos. Tai dosnu; todėl mes skaičiuojame ir griežtesnį variantą (<code>match = end</code>: tik paskutinė lango eilutė). (b) Kovo laikas apvalintas iki minutės, todėl ±1 min. apima ~15 eilučių. (c) Kadangi iš eilės einantys klaidingi langai skaičiuojami kaip vienas FP, o pilnumas dosnus, <b>detektorius, pažymintis visus langus, gauna F1 apie 0,95–0,99</b>. Plačiau 6.3.</div>
+
+<h3>4.5 Ką radome skaitydami tekstą ir kodą <span class="tag o">neutraliai</span></h3>
+<table>
+<tr><th>Tekste</th><th>Kode / lentelėse</th></tr>
+<tr><td>Slenkstis e = <b>didžiausia</b> mokymo klaida (6 formulė)</td><td><code>BaseAD.compute_training_scores</code>: <b>95 procentilė</b> (<code>mse_thr = 0.05</code>). Mūsų atkartojimas su max duoda F1 0,05 (rastos 1 iš 39 anomalijų), su 95 procentile 0,70, kaip jų 0,693</td></tr>
+<tr><td>42 sąmoningai sukelti įvykiai</td><td>Visi jų pilnumo skaičiai yra k/39 (pavyzdžiui, 0,077 = 3/39, 0,692 = 27/39), o faile 39 žymos</td></tr>
+<tr><td>Iki 200 epochų</td><td>Kode numatytoji reikšmė 100 epochų (<code>TFAutoAD(…)</code> be argumento)</td></tr>
+<tr><td>5 sluoksnių modelis: 3n/4, n/2, n/4, n/2, 3n/4</td><td>Kode: 2n/3 vietoj 3n/4</td></tr>
+</table>
+<p>Tai nereiškia „straipsnis klysta“: greičiausiai tekstas ir kodas tiesiog skiriasi. Svarbu, kad <b>mes lyginamės su tuo, ką daro jų kodas</b>.</p>
+<h3>4.6 Ko jie neišbandė</h3>
+<p>Rekurentinių ar dėmesio tinklų, fizikinių požymių (gravitacijos ašis, |B| pokytis), sesijų normalizavimo, slenksčio parinkimo be testo etikečių, vertinimo pagal sesijas.</p>
+
+<!-- ======================================================= 5 -->
+<h2 id="s5">5. Autoenkoderis ir GRU: kaip mūsų modelis veikia</h2>
+<h3>5.1 Autoenkoderis</h3>
+<p>Tinklas turi du pusiaukelės: <b>koduotojas</b> suspaudžia įvestį į mažą skaičių reikšmių (<i>latentinis vektorius</i>, „butelio kakliukas“), <b>dekoderis</b> bando iš jų atkurti pradinę įvestį. Mokymas minimizuoja skirtumą tarp įvesties ir atkūrimo (MSE). Kadangi kakliukas per siauras viską įsiminti, tinklas išmoksta tik dažniausius dėsningumus. Jei duosime duomenis, kokių mokymo metu nebuvo, atkūrimas bus prastas: <b>klaida didelė, tai ir yra anomalijos požymis</b>.</p>
+<h3>5.2 Kodėl GRU</h3>
+<p>Mūsų anomalijos yra <i>įvykiai laike</i>, ne pavieniai taškai, todėl modelis turi matyti kelias eilutes iš eilės. <b>Rekurentinis tinklas</b> (RNN) skaito seką po žingsnį ir nešasi „atmintį“ <code>h</code> (slaptąją būseną). <b>GRU</b> (angl. <i>gated recurrent unit</i>) naudoja du „vartus“, kad nuspręstų, ką išsaugoti ir ką pamiršti:</p>
+<pre>r = σ(W_ir x + b_ir + W_hr h + b_hr)            reset vartai
+z = σ(W_iz x + b_iz + W_hz h + b_hz)            update vartai
+n = tanh(W_in x + b_in + r ⊙ (W_hn h + b_hn))   kandidatas
+h′ = (1 − z) ⊙ n + z ⊙ h                        nauja būsena</pre>
+<p>Kai z ≈ 1, būsena beveik nesikeičia (įsimena); kai z ≈ 0, ją beveik pilnai pakeičia nauja informacija. LSTM veikia panašiai, bet turi dar vieną atmintį ir daugiau parametrų. Svarbu: išmatavome, kad tankusis AE su ištiesintu 10 eilučių langu duoda beveik tą patį kaip GRU (AUROC 0,82 vs 0,84), taigi didžiausią naudą duoda <i>kontekstas</i>, ne pats rekurentiškumas (žr. Q7).</p>
+<h3>5.3 Mūsų <code>SeqAE</code></h3>
+<svg viewBox="0 0 860 190" width="100%" role="img" aria-label="GRU autoenkoderio schema" style="margin:10px 0">
+ <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#e4572e"/></marker></defs>
+ <g font-family="Calibri,sans-serif" font-size="15" text-anchor="middle">
+  <rect x="10" y="50" width="150" height="90" rx="10" fill="#f3f4f6" stroke="#9ca3af"/><text x="85" y="85" fill="#1f2933" font-weight="700">Langas</text><text x="85" y="108" fill="#1f2933">10 eil. × 6 stulp.</text>
+  <line x1="160" y1="95" x2="198" y2="95" stroke="#e4572e" stroke-width="2.5" marker-end="url(#ar)"/>
+  <rect x="200" y="50" width="150" height="90" rx="10" fill="#f3f4f6" stroke="#9ca3af"/><text x="275" y="82" fill="#1f2933" font-weight="700">GRU koduotojas</text><text x="275" y="105" fill="#1f2933">slaptoji būsena 16</text><text x="275" y="125" fill="#6b7280">skaito 10 žingsnių</text>
+  <line x1="350" y1="95" x2="388" y2="95" stroke="#e4572e" stroke-width="2.5" marker-end="url(#ar)"/>
+  <rect x="390" y="50" width="130" height="90" rx="10" fill="#1b998b"/><text x="455" y="85" fill="#fff" font-weight="700">8 skaičiai</text><text x="455" y="108" fill="#fff">latentinis vektorius</text>
+  <line x1="520" y1="95" x2="558" y2="95" stroke="#e4572e" stroke-width="2.5" marker-end="url(#ar)"/>
+  <rect x="560" y="50" width="150" height="90" rx="10" fill="#f3f4f6" stroke="#9ca3af"/><text x="635" y="82" fill="#1f2933" font-weight="700">GRU dekoderis</text><text x="635" y="105" fill="#1f2933">8 → 16, 10 žingsnių</text><text x="635" y="125" fill="#6b7280">+ tiesinis į 6</text>
+  <line x1="710" y1="95" x2="748" y2="95" stroke="#e4572e" stroke-width="2.5" marker-end="url(#ar)"/>
+  <rect x="750" y="50" width="100" height="90" rx="10" fill="#f3f4f6" stroke="#9ca3af"/><text x="800" y="85" fill="#1f2933" font-weight="700">Atkurtas</text><text x="800" y="108" fill="#1f2933">langas</text>
+  <text x="430" y="25" fill="#6b7280">klaida = vidutinis (langas − atkurtas)² visuose 60 skaičių</text>
+ </g>
+</svg>
+<table>
+<tr><th>Nustatymas</th><th>Reikšmė</th></tr>
+<tr><td>Parametrų skaičius</td><td>3 166 (GRU koduotojas 1 152; į latentinį 136; iš latentinio 144; GRU dekoderis 1 632; išvestis 102). LSTM variantas 4 094; straipsnio tankusis 11→5→11 turi 126</td></tr>
+<tr><td>Mokymo langai</td><td>11 203 (iš 12 678 eilučių po filtrų); testo 1 228</td></tr>
+<tr><td>Paruošimas</td><td>Kiekvienas stulpelis standartizuotas (z-balas) pagal mokymo duomenis</td></tr>
+<tr><td>Mokymas</td><td>Adam, lr 10⁻³, paketas 64, iki 60 epochų (visi paleidimai pasiekė 60), ankstyvas sustabdymas su kantrybe 10 pagal mokymo klaidą</td></tr>
+<tr><td>Įrenginys</td><td>CPU (tiek mažiems modeliams jis 4–14× greitesnis už MPS, išmatuota)</td></tr>
+<tr><td>Slenkstis</td><td>Mokymo langų klaidų procentilė: q95, q99 arba max</td></tr>
+</table>
+<p>Kodas yra <code>baseline_gru.ipynb</code>; visi 54 paleidimai užfiksuoti <code>experiments_anomaly.csv</code>.</p>
+
+<!-- ======================================================= 6 -->
+<h2 id="s6">6. Mūsų rezultatai ir kaip juos teisingai skaityti</h2>
+<h3>6.1 Pagrindinė lentelė</h3>
+<p>Įvykių metrika (4.4 dalis). Rezultatai tikslumas / pilnumas / <b>F1</b>; „langas“ = straipsnio susiejimas. Kai paleidimų daugiau nei vienas, rodomas vidurkis.</p>
+<table>
+<tr><th>Modelis</th><th>Stulp.</th><th class="n">Langas</th><th class="n">Pal.</th><th>q95</th><th>q99</th><th>max</th></tr>
+<tr><td>Tankusis AE (atkartojimas)</td><td>11</td><td class="n">1</td><td class="n">3</td><td>0,75 / 0,66 / <b>0,70</b></td><td>0,74 / 0,56 / 0,64</td><td>0,50 / 0,03 / 0,05</td></tr>
+<tr><td>Tankusis AE</td><td>6 IMU</td><td class="n">1</td><td class="n">1</td><td>0,87 / 0,51 / 0,65</td><td>0,91 / 0,49 / 0,63</td><td>0,81 / 0,44 / 0,57</td></tr>
+<tr><td>GRU AE</td><td>6 IMU</td><td class="n">5</td><td class="n">1</td><td>0,60 / 0,97 / 0,75</td><td>0,75 / 0,90 / 0,81</td><td>1,00 / 0,41 / 0,58</td></tr>
+<tr class="hl"><td>GRU AE</td><td>6 IMU</td><td class="n">10</td><td class="n">3</td><td>0,74 / 0,92 / <b>0,82</b></td><td>0,84 / 0,82 / 0,83</td><td>1,00 / 0,46 / 0,63</td></tr>
+<tr><td>GRU AE</td><td>6 IMU</td><td class="n">20</td><td class="n">1</td><td>0,84 / 0,80 / 0,82</td><td>0,83 / 0,77 / 0,80</td><td>1,00 / 0,49 / 0,66</td></tr>
+<tr><td>LSTM AE</td><td>6 IMU</td><td class="n">10</td><td class="n">1</td><td>0,74 / 0,92 / 0,82</td><td>0,82 / 0,82 / 0,82</td><td>1,00 / 0,46 / 0,63</td></tr>
+<tr><td>GRU AE</td><td>11</td><td class="n">10</td><td class="n">1</td><td>0,73 / 0,85 / 0,79</td><td>0,89 / 0,59 / 0,71</td><td>0,78 / 0,18 / 0,29</td></tr>
+</table>
+<p>Su griežtesniu susiejimu (<code>end</code>), kai skaičiuojama tik paskutinė lango eilutė, GRU L = 10 duoda F1 0,80 (q95) ir 0,83 (q99): rezultatas beveik nesikeičia, taigi dosnus susiejimas jo nepaaiškina.</p>
+
+<h3>6.2 Interaktyvus langas B: slenkstis</h3>
+<p>Žemiau yra tikra atkūrimo klaida kiekvienam testo langui (pagrindinis GRU modelis, seed 0). <b>Judinkite slenkstį</b> ir žiūrėkite, kaip keičiasi TP, FP, tikslumas ir pilnumas (tas pats skaičiavimas kaip Python kode).</p>
+<div class="widget" id="wB">
+<h4>Slenkstis ir įvykių metrika</h4>
+<canvas id="bC"></canvas>
+<div class="ctl" style="grid-template-columns:110px 1fr 110px"><label>Slenkstis</label><input id="bT" type="range" min="0" max="1000" value="500"><span id="bTv"></span></div>
+<div>
+ <button data-p="q95">q95 (autorių kodas)</button>
+ <button data-p="q99">q99</button>
+ <button data-p="max">max (straipsnio tekstas)</button>
+ &nbsp; Susiejimas:
+ <label><input type="radio" name="bm" value="mw" checked> langas</label>
+ <label><input type="radio" name="bm" value="me"> tik paskutinė eilutė</label>
+</div>
+<div class="stat" id="bS"></div>
+<p class="mute" style="font-size:15px">Žalsva = žemiau slenksčio, oranžinė = pažymėta kaip anomalija. Raudonos linijos = pažymėtos anomalijos. Kiekviena anomalija paveikia ~10 gretimų langų, todėl matote „kupras“.</p>
+</div>
+<div class="box"><b class="t">Ką išmokti iš šio lango</b>
+(1) Su max slenksčiu tikslumas 1,00, bet rastos tik 18 iš 39: slenkstis per griežtas. (2) Mažinant slenkstį pilnumas auga, bet atsiranda klaidingų aliarmų. (3) F1 beveik nekinta (≈ 0,80–0,83) nuo ~0,03 iki ~0,4, bet slenkstį mažinant dar labiau F1 vėl <b>kyla iki ~0,95</b>, nes pažymima beveik viskas. Tai ne gerėjimas, o metrikos ypatybė (6.3). Todėl su F1 reikia žiūrėti, kiek langų pažymima.</div>
+
+<h3>6.3 Metrikos ypatybė: kodėl 0,82 nėra „82 % teisingai“ <span class="tag o">svarbu</span></h3>
+<p>Straipsnio metrikoje: (a) iš eilės einantys klaidingi aliarmai skaičiuojami kaip <b>vienas</b> FP, (b) pilnumas dosnus (langas pataiko, jei kuri nors jo dalis ±1 min. nuo anomalijos). Todėl <b>per daug pažymintis detektorius baudžiamas labai mažai</b>. Mūsų testo langų 47 % yra ±1 min. nuo kokios nors anomalijos, tad:</p>
+<table>
+<tr><th>Detektorius (langas 10 eilučių)</th><th class="n">Pažymėta langų</th><th class="n">Event F1</th></tr>
+<tr><td>Visada „anomalija“</td><td class="n">100 %</td><td class="n">0,95 (viena eilutė: 0,99)</td></tr>
+<tr><td>Mūsų GRU, q95</td><td class="n">48 %</td><td class="n">0,82</td></tr>
+<tr><td>Mūsų GRU, max</td><td class="n">8 %</td><td class="n">0,63</td></tr>
+<tr><td>Atsitiktinis, pažymi tiek pat langų kaip GRU q95 (vidurkis iš 300 bandymų)</td><td class="n">48 %</td><td class="n">0,30</td></tr>
+</table>
+<p>Išvados: (1) F1 šioje metrikoje <b>tinka lyginti metodus tarpusavyje</b> (straipsnio ir mūsų, esant tai pačiai taisyklei), bet ne kaip absoliuti kokybė. Mūsų modelis yra gerokai geresnis už atsitiktinį tuo pačiu pažymėjimo dažniu (0,82 vs 0,30), bet ne geresnis už „visada anomalija“. (2) Q95 slenkstis pažymi 48 % testo langų, nes testo duomenys <b>labiau kintantys nei mokymo</b>, taigi daug langų atrodo „neįprasti“. (3) Todėl papildomai žiūrime į slenksčiui nejautrų matą: <b>AUROC</b> (kiek gerai klaida surikiuoja langus „šalia anomalijos“ ir „kiti“; 0,5 = atsitiktinis, 1,0 = tobula).</p>
+<table>
+<tr><th>Modelis (seed 0)</th><th class="n">Langų</th><th class="n">Dalis šalia anomalijų</th><th class="n">AUROC</th><th class="n">AUPRC</th><th class="n">Event F1 (q95)</th></tr>
+<tr><td>Tankusis AE, 11 stulp., 1 eilutė</td><td class="n">1 380</td><td class="n">0,37</td><td class="n">0,727</td><td class="n">0,584</td><td class="n">0,72</td></tr>
+<tr><td>Tankusis AE, 6 IMU, 1 eilutė</td><td class="n">1 380</td><td class="n">0,37</td><td class="n">0,688</td><td class="n">0,642</td><td class="n">0,65</td></tr>
+<tr><td>GRU AE, langas 5</td><td class="n">1 311</td><td class="n">0,42</td><td class="n">0,794</td><td class="n">0,741</td><td class="n">0,75</td></tr>
+<tr class="hl"><td>GRU AE, langas 10</td><td class="n">1 228</td><td class="n">0,47</td><td class="n">0,847</td><td class="n">0,841</td><td class="n">0,82</td></tr>
+<tr><td>LSTM AE, langas 10</td><td class="n">1 228</td><td class="n">0,47</td><td class="n">0,862</td><td class="n">0,857</td><td class="n">0,82</td></tr>
+<tr><td>GRU AE, 11 stulp., langas 10</td><td class="n">1 228</td><td class="n">0,47</td><td class="n">0,845</td><td class="n">0,780</td><td class="n">0,79</td></tr>
+<tr><td>GRU AE, langas 20</td><td class="n">1 082</td><td class="n">0,54</td><td class="n">0,935</td><td class="n">0,949</td><td class="n">0,82</td></tr>
+</table>
+<p class="mute" style="font-size:15px">Atsargiai: skirtingų langų ilgių AUROC tiesiogiai lyginti negalima, nes „šalia anomalijos“ etikečių dalis auga su langu (37 % → 54 %), o ilgesnis langas lengviau „pataiko“. Palyginimas teisingas tarp modelių su tuo pačiu langu: pavyzdžiui, GRU 10 (0,847) ir LSTM 10 (0,862) panašūs, o 11 stulpelių versija (0,845) tokia pat kaip 6 IMU. Skaičiai: <code>deep_dive/metric_check.py</code>.</p>
+
+<h3>6.4 Sąžiningas skaitymas</h3>
+<ul>
+<li><b>Slenkstis iš anksto.</b> q95 pasirinkome iš anksto, nes taip daro autorių kodas. q99 ir max matėme testo rezultatuose, todėl „geriausio“ (0,83) nepateikiame kaip pagrindinio.</li>
+<li><b>Skirtingas pakartojimų skaičius.</b> Straipsnis vidurkina 20 modelių, mes 3 (pagrindinei sąrankai). q95 visi trys davė tą patį F1 0,818 (TP 36, FP 13); q99 skiriasi iki ~0,01.</li>
+<li><b>Laiko langas yra trumpas.</b> 10 eilučių ≈ 100 s (sausį) ar ~2 min. (kovą), tai trumpo konteksto modelis.</li>
+<li><b>Gali būti, kad dalis rezultato yra „neramių sesijų“ atpažinimas.</b> Anomalijos sutelktos dviejose dienose, kuriose |B| kinta labiausiai. Mes nežiūrėjome rezultatų pagal sesijas, todėl negalime pasakyti, kiek čia tikro įvykių aptikimo.</li>
+<li><b>Nelygiavertis palyginimas su straipsniu.</b> Jų vertinimas naudoja tuos pačius duomenis ir susiejimą, bet jų modelis kitoks (tankusis, sujungti langai) ir kitas vidurkinimas.</li>
+</ul>
+<p>Visa klaidų laiko eilutė:</p>
+<img alt="Atkūrimo klaida pagal testo langus" src="{{IMG_TIMELINE}}">
+
+<!-- ======================================================= 7 -->
+<h2 id="s7">7. Ką daryti toliau</h2>
+<ol>
+<li><b>Fizikiniai požymiai.</b> Gravitacijos ašis ir jos šuoliai; |a| − g; |B| pokytis sesijos viduje (atimant slenkantį mediano lygį); dinaminis pagreitis √(|a|² − g²).</li>
+<li><b>Modelių palyginimas (ablacija).</b> (a) fizikinės taisyklės, (b) <b>GMM</b> (Gauso mišinių modelis: kelios „normalaus elgesio“ grupės, anomalija = maža tikimybė), (c) tankusis AE su fiziniais požymiais, (d) GRU AE su žaliaviniais stulpeliais. Jei fizikiniai požymiai nugali, parodome, kad fizikos žinios padeda.</li>
+<li><b>Slenkstis be testo etikečių.</b> Pavyzdžiui, kryžminė patikra pagal važiavimus (sesijas) mokymo duomenyse.</li>
+<li><b>Vertinimas pagal sesijas</b>, kad atsakytume, ar modelis aptinka įvykius, ar tik neramias sesijas.</li>
+<li><b>Mokymo duomenų valymas</b>: ~77 apvertimai (pašalinus AUROC beveik nepakito, 0,837 → 0,839, todėl tai ne pirmas prioritetas).</li>
+<li><b>Ataskaita</b> (≤ 12 psl.) ir kodas iki 2027-02-28; DI naudojimo atskleidimas.</li>
+</ol>
+<div class="box"><b class="t">Kodėl GMM</b>K-means tariasi apskritus vienodo dydžio klasterius, o atstumas iki centro nėra kalibruotas anomalijos įvertis. GMM duoda tikrą tankį (tikimybę), taigi „maža tikimybė“ yra natūralus anomalijos kriterijus. Be to, normalus elgesys čia turi kelis režimus (važiavimas, stovėjimas, skirtingos padėtys), o GMM juos tvarko.</div>
+<p>Transformerį vertėtų įtraukti tik kaip papildomą palyginimą: duomenų mažai (~11 tūkst. langų), o anomalijos trumpos, todėl ilgo konteksto dėmesys duoda mažai.</p>
+
+<!-- ======================================================= 8 -->
+<h2 id="s8">8. Klausimai ir atsakymai</h2>
+<p>Galimi klausimai iš dėstytojo ir kolegų su trumpais atsakymais. Spauskite klausimą.</p>
+
+<details><summary>Ar F1 0,82 yra daug? Ką rodo „visada anomalija“?</summary><p>Šioje metrikoje F1 nėra absoliuti kokybė: iš eilės einantys klaidingi aliarmai skaičiuojami kaip vienas, o susiejimas dosnus, todėl detektorius, kuris visada sako „anomalija“, gauna 0,95. Mūsų GRU pažymi 48 % langų ir gauna 0,82, o atsitiktinis detektorius su tuo pačiu pažymėjimo dažniu 0,30. Todėl F1 naudojame tik palyginti su straipsniu ir pridedame AUROC (0,85 GRU, 0,73 tankiam AE su 11 stulpelių).</p></details>
+<details><summary>Kodėl ne transformeris?</summary><p>Duomenų mažai (11 203 mokymo langai), anomalijos trumpos (kelios eilutės), taigi ilgo konteksto dėmesys naudos neduotų. Paprastas GRU jau pasiekia straipsnio geriausio modelio lygį. Transformerį galime įtraukti kaip palyginimą ataskaitoje.</p></details>
+<details><summary>Kodėl GRU, o ne LSTM?</summary><p>Mažiau parametrų (3 166 vs 4 094) ir tas pats rezultatas (F1 0,82 abiem, q95, langas 10, vienas LSTM paleidimas).</p></details>
+<details><summary>Kaip parinkote slenkstį? Ar nežiūrėjote į testo etiketes?</summary><p>Slenkstis imamas iš mokymo klaidų procentilės. Pagrindinę q95 pasirinkome iš anksto, nes taip daro straipsnio autorių kodas. Dar bandėme q99 ir max ir visus tris matėme testo rezultatuose, todėl geriausio nepasirinkome pagrindiniu. Ateityje slenkstį rinksimės kryžmine patikra mokymo duomenyse.</p></details>
+<details><summary>Kodėl vertinama per įvykius, o ne per eilutes?</summary><p>Testo duomenyse yra tik 39 laiko žymos, eilučių lygmens etikečių nėra. Taip vertina ir straipsnis, todėl rezultatai lyginami.</p></details>
+<details><summary>Ar ±1 minutės tolerancija neišpučia rezultato?</summary><p>Ji yra autorių metrikos dalis. Kovo laikas apvalintas iki minutės, todėl kitaip negalima. Patikrinome griežtesnį variantą (tik paskutinė lango eilutė): F1 0,80 vietoj 0,82.</p></details>
+<details><summary>Kodėl nenaudojate GPS?</summary><p>Testo duomenyse vietos anomalijų nėra (straipsnis), kovo mėn. greitis visada 0, 7–12 % eilučių be fiksacijos. Palyginimui paleidome 11 stulpelių rinkinį: F1 0,79 vs 0,82 (vienas paleidimas), taigi GPS neprideda naudos.</p></details>
+<details><summary>Ar jūsų rezultatas geresnis už straipsnio?</summary><p>Geresnis už jų jutiklio (edge) modelį (0,82 vs ~0,70) ir panašus į geriausią serverio modelį (0,82–0,84). Bet jie vidurkina 20 modelių, mes 3, o jų serverio modelis mato iki 20 eilučių. Todėl sakome „panašus“, ne „geresnis“.</p></details>
+<details><summary>Kas yra RMS ir kodėl ne paprastas vidurkis?</summary><p>RMS = √(vidurkis kvadratų). Paprastas vidurkis virpesius išvidurkintų iki nulio, o RMS juos išlaiko. RMS² = vidurkis² + dispersija, todėl jis atspindi ir pastovią dalį (sunkį), ir purtymą. Tai ir duomenų formatas, žaliavinio signalo neturime.</p></details>
+<details><summary>Kas yra autoenkoderis ir kodėl jis tinka anomalijoms?</summary><p>Neuroninis tinklas, kuris suspaudžia įvestį ir atkuria. Mokomas tik su normaliais duomenimis, todėl normalius atkuria gerai, o neįprastus prastai. Atkūrimo klaida yra anomalijos įvertis.</p></details>
+<details><summary>Kas, jei mokymo duomenyse jau yra anomalijų?</summary><p>Mokymo duomenyse yra ~77 gravitacijos ašies pasikeitimai, ir modelis gali išmokti juos kaip normalius. Išmatavome poveikį: pašalinus 216 mokymo langų su tokiais pasikeitimais, AUROC beveik nepakito (0,837 → 0,839), todėl tai mažesnė problema, nei tikėjomės. Tikrinome tik reitingavimą, ne konkretų slenkstį.</p></details>
+<details><summary>Kam reikalingas rekurentinis modelis, jei galima vertinti kiekvieną eilutę?</summary><p>Reikia konteksto, bet ne būtinai rekurentinio tinklo. Tos pačios testo eilutės, tos pačios etiketės: vienos eilutės tankusis AE AUROC 0,71, tankusis AE su 10 eilučių langu 0,82, GRU AE su 10 eilučių langu 0,84. Taigi didžiausią naudą duoda langas, o GRU prideda nedaug, bet turi mažiau parametrų (3 166 vs 4 635). Plačiau Q7.</p></details>
+<details><summary>Ar modelis aptinka įvykius, ar tik neramias sesijas?</summary><p>Šiuo metu nežinome, nes rezultatų pagal sesijas dar nepadarėme. Anomalijos sutelktos dviejose dienose (2021-01-21 ir 2021-03-21…23), kuriose magnetinis laukas kinta labiausiai. Tai pirmoji kliūtis, kurią spręsime.</p></details>
+<details><summary>Kodėl langas 10 eilučių?</summary><p>Mūsų paleidimuose 5 eilučių langas duoda 0,75, o 10 ir 20 po 0,82, taigi ilgesnis langas daugiau nebepadeda. Tai viena sąranka su vienu seed, todėl tiksliau nustatyti nesiimame.</p></details>
+<details><summary>Kodėl su max slenksčiu rezultatas toks prastas?</summary><p>Didžiausia mokymo klaida yra labai didelė (tikėtina, kad dėl keistų mokymo taškų, pavyzdžiui, apvertimų), todėl testo langai retai ją viršija. Mūsų tankusis AE su max aptinka 1 iš 39, GRU 18 iš 39. Su 95 procentile atkartojome jų 0,693 (gavome 0,70), todėl manome, kad jų kodas naudojo procentilę.</p></details>
+<details><summary>Kodėl 39, o ne 42 anomalijos?</summary><p>Straipsnio tekste 42, bet visi jų pilnumo skaičiai yra k/39, o faile yra 39 žymos. Nežinome priežasties; aprašysime kaip neatitikimą.</p></details>
+<details><summary>Kas jūsų darbe originalu?</summary><p>(1) Straipsnio tekste ir kode esančio neatitikimo (slenksčio) radimas ir atkartojimas. (2) Fizikiniu požiūriu pagrįsti požymiai ir jų palyginimas su žaliavinėmis reikšmėmis (planuojama). (3) Pirmasis rekurentinio modelio rezultatas šiems duomenims su tuo pačiu vertinimu.</p></details>
+<details><summary>Kokie yra pagrindiniai rezultato apribojimai?</summary><p>Mažas testo rinkinys (39 žymos), grubios laiko žymos, 3 pakartojimai, galimas sesijų efektas, slenksčio pasirinkimas.</p></details>
+
+<!-- ======================================================= 9 -->
+<h2 id="s9">9. Žodynėlis</h2>
+<table>
+<tr><th>Terminas</th><th>Reikšmė</th></tr>
+<tr><td>ACC / MAG</td><td>Akselerometras / magnetometras stulpelių pavadinimuose</td></tr>
+<tr><td>IMU</td><td>Inercinis matavimo vienetas (čia pagreitis ir magnetinis laukas)</td></tr>
+<tr><td>GNSS / GPS</td><td>Palydovinė padėties sistema</td></tr>
+<tr><td>g</td><td>Laisvojo kritimo pagreitis, ~9,81 m/s²</td></tr>
+<tr><td>µT</td><td>Mikrotesla, magnetinio lauko vienetas</td></tr>
+<tr><td>RMS</td><td>Šaknis iš kvadratų vidurkio</td></tr>
+<tr><td>Norma, |a|</td><td>Vektoriaus ilgis √(x² + y² + z²)</td></tr>
+<tr><td>Sukimosi nekintamumas</td><td>Dydis, kuris nekinta sukant jutiklį (vektoriaus ilgis)</td></tr>
+<tr><td>Gravitacijos ašis</td><td>Ašis, kurioje didžiausias ACC RMS (kur „žemyn“)</td></tr>
+<tr><td>Kietoji / minkštoji geležis</td><td>Pastovus magnetinis poslinkis / lauko iškreipimas aplinkos metalo</td></tr>
+<tr><td>Sesija</td><td>Eilučių seka be &gt; 5 min. tarpų</td></tr>
+<tr><td>Naujumo aptikimas</td><td>Mokymasis tik iš normalių duomenų, anomalija = naujas elgesys</td></tr>
+<tr><td>Autoenkoderis</td><td>Tinklas „suspausk ir atkurk“; klaida = anomalijos įvertis</td></tr>
+<tr><td>ADM, ADM-EDGE, ADM-FOG</td><td>Anomaly Detection Module: straipsnio autoenkoderis, veikiantis jutiklio įrenginyje (EDGE, viena eilutė) arba serveryje (FOG, kelios eilutės); žr. Q13</td></tr>
+<tr><td>Latentinis vektorius</td><td>Suspaustas įvesties vaizdas (mūsų: 8 skaičiai)</td></tr>
+<tr><td>GRU / LSTM</td><td>Rekurentiniai tinklai su vartais</td></tr>
+<tr><td>Z-balas</td><td>(x − vidurkis) / standartinis nuokrypis</td></tr>
+<tr><td>Procentilė (q95)</td><td>Reikšmė, žemiau kurios yra 95 % duomenų</td></tr>
+<tr><td>TP / FP / FN</td><td>Teisingai aptikta / klaidingas aliarmas / praleista anomalija</td></tr>
+<tr><td>Tikslumas (precision), pilnumas (recall), F1</td><td>Tikslumas = TP/(TP+FP): kuri dalis aliarmų teisinga. Pilnumas = TP/(TP+FN): kuri dalis tikrų anomalijų rasta (pas mus TP/39). F1 = jų harmoninis vidurkis. Čia „tikslumas“ yra <i>precision</i>, ne <i>accuracy</i></td></tr>
+<tr><td>Ankstyvas sustabdymas</td><td>Mokymas nutraukiamas, kai klaida kurį laiką nebemažėja</td></tr>
+<tr><td>GMM</td><td>Gauso mišinių modelis: duomenų tankis kaip kelių Gauso skirstinių suma</td></tr>
+<tr><td>Ablacija</td><td>Eksperimentas, kuriame po vieną dalį išjungiama ar keičiama, kad matytųsi jos nauda</td></tr>
+</table>
+<p class="mute">Failai: <code>baseline_gru.ipynb</code>, <code>eda.ipynb</code>, <code>../experiments_anomaly.csv</code>, <code>literature/savic2021.txt</code>, <code>slides/midterm.pptx</code>.</p>
+</main>
+
+<script>
+const DATA = {{DATA}};
+/* theme */
+document.getElementById('theme').onclick=()=>{const r=document.documentElement;const dark=getComputedStyle(r).getPropertyValue('--bg').trim()==='#161b22';r.dataset.theme=dark?'light':'dark'};
+
+/* ===== Widget A: rotation / hard iron / shaking ===== */
+(function(){
+  const g=9.81, Bw=[22,0,-43];
+  const $=id=>document.getElementById(id);
+  const rows=(el,names)=>{el.innerHTML=names.map((n,i)=>`<span>${n}</span><div><div class="bar ${n.startsWith('|')?'sum':''}" id="${el.id}${i}" style="width:0"></div></div><span id="${el.id}v${i}"></span>`).join('')};
+  rows($('aA'),['ACC x','ACC y','ACC z','|a|']); rows($('aB'),['MAG x','MAG y','MAG z','|B|']);
+  function upd(){
+    const th=$('aT').value*Math.PI/180, h=+$('aH').value, s=$('aS').value/10;
+    $('aTv').textContent=$('aT').value+'°'; $('aHv').textContent=h+' µT'; $('aSv').textContent=s.toFixed(1);
+    const c=Math.cos(th), sn=Math.sin(th);
+    const a=[-g*sn,0,g*c];
+    const B=[Bw[0]*c-Bw[2]*sn+h,0,Bw[0]*sn+Bw[2]*c];
+    const aR=a.map(v=>Math.sqrt(v*v+s*s)), bR=B.map(Math.abs);
+    const aN=Math.hypot(...aR), bN=Math.hypot(...bR);
+    const put=(id,v,max,txt)=>{$(id).style.width=Math.min(100,v/max*100)+'%';$(id.replace(/(\d)$/,'v$1')).textContent=txt};
+    [...aR,aN].forEach((v,i)=>put('aA'+i,v,18,v.toFixed(2)));
+    [...bR,bN].forEach((v,i)=>put('aB'+i,v,120,v.toFixed(1)));
+    const ax='xyz'[aR.indexOf(Math.max(...aR))];
+    $('aNote').textContent=`Gravitacijos ašis: ${ax}. |a| = ${aN.toFixed(2)} (√(g² + 3s²) = ${Math.sqrt(g*g+3*s*s).toFixed(2)}), |B| = ${bN.toFixed(1)} µT.`;
+  }
+  ['aT','aH','aS'].forEach(id=>$(id).addEventListener('input',upd)); upd();
+})();
+
+/* ===== Widget B: threshold explorer (same logic as event_scores in Python) ===== */
+function eventScores(err,thr,m,nAnom){
+  const hit=new Set(); let fp=0, prev=false, flagged=0;
+  for(let i=0;i<err.length;i++){
+    const f=err[i]>thr; if(f) flagged++;
+    if(f){ if(m[i]>=0) hit.add(m[i]); else if(!prev) fp++; }
+    prev=f;
+  }
+  const tp=hit.size, P=tp+fp?tp/(tp+fp):0, R=tp/nAnom;
+  return {tp,fp,P,R,F1:P+R?2*P*R/(P+R):0,flagged};
+}
+(function(){
+  const $=id=>document.getElementById(id), cv=$('bC'), err=DATA.err;
+  const lo=Math.log10(Math.min(...err)), hi=Math.log10(Math.max(...err))+0.05;
+  const toSlider=v=>Math.round((Math.log10(v)-lo)/(hi-lo)*1000), fromSlider=s=>Math.pow(10,lo+(hi-lo)*s/1000);
+  let thr=DATA.thr.q95;
+  function draw(){
+    const dpr=window.devicePixelRatio||1, W=cv.clientWidth, H=cv.clientHeight;
+    cv.width=W*dpr; cv.height=H*dpr; const x=cv.getContext('2d'); x.scale(dpr,dpr); x.clearRect(0,0,W,H);
+    const L=46,R=10,T=10,B=22, w=W-L-R, h=H-T-B, X=i=>L+i/(err.length-1)*w, Y=v=>T+(1-(Math.log10(v)-lo)/(hi-lo))*h;
+    const css=getComputedStyle(document.documentElement);
+    x.font='12px Calibri,sans-serif'; x.fillStyle=css.getPropertyValue('--mute'); x.strokeStyle=css.getPropertyValue('--line');
+    for(let e=Math.ceil(lo);e<=Math.floor(hi);e++){const y=Y(Math.pow(10,e)); x.beginPath(); x.moveTo(L,y); x.lineTo(L+w,y); x.stroke(); x.fillText('10^'+e,4,y+4);}
+    x.strokeStyle='rgba(228,87,46,.35)'; DATA.pos.forEach(p=>{x.beginPath(); x.moveTo(X(p),T); x.lineTo(X(p),T+h); x.stroke();});
+    err.forEach((v,i)=>{x.fillStyle=v>thr?'#e4572e':'#1b998b'; x.beginPath(); x.arc(X(i),Y(v),2.4,0,6.3); x.fill();});
+    x.strokeStyle=css.getPropertyValue('--ink'); x.setLineDash([6,4]); x.lineWidth=1.5; x.beginPath(); x.moveTo(L,Y(thr)); x.lineTo(L+w,Y(thr)); x.stroke(); x.setLineDash([]); x.lineWidth=1;
+    x.fillStyle=css.getPropertyValue('--mute'); x.fillText('testo langai laiko tvarka →',L+w-150,H-6);
+  }
+  function stats(){
+    const m=DATA[document.querySelector('input[name=bm]:checked').value], r=eventScores(err,thr,m,DATA.n_anom);
+    $('bTv').textContent=thr.toPrecision(3);
+    $('bS').innerHTML=`<div><b>${r.flagged}</b>pažymėta langų (${(100*r.flagged/err.length).toFixed(0)} %)</div><div><b>${r.tp}/${DATA.n_anom}</b>TP</div><div><b>${r.fp}</b>FP</div><div><b>${r.P.toFixed(2)}</b>tikslumas</div><div><b>${r.R.toFixed(2)}</b>pilnumas</div><div><b>${r.F1.toFixed(2)}</b>F1</div>`;
+    draw();
+  }
+  $('bT').value=toSlider(thr);
+  $('bT').addEventListener('input',e=>{thr=fromSlider(+e.target.value); stats();});
+  document.querySelectorAll('#wB button').forEach(b=>b.onclick=()=>{thr=DATA.thr[b.dataset.p]; $('bT').value=toSlider(thr); stats();});
+  document.querySelectorAll('input[name=bm]').forEach(r=>r.onchange=stats);
+  window.addEventListener('resize',draw); stats();
+})();
+/*WIDGET_C*/
+</script>
+</body>
+</html>

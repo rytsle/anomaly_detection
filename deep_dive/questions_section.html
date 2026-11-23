@@ -1,0 +1,290 @@
+<!-- ======================================================= Q -->
+<h2 id="sq">Q. Tavo klausimai: kaip viskas veikia, žingsnis po žingsnio</h2>
+<p>Čia surinkti klausimai, kurie sukelia daugiausia painiavos. Klausimai pažymėti <span class="rq">raudonai</span>. Pirmiausia vienas vaizdas, kaip viskas sujungta, o tada atsakymai su <b>tikrais skaičiais iš mūsų duomenų</b>.</p>
+
+<svg viewBox="0 0 900 330" width="100%" role="img" aria-label="Duomenų srautas mokymo ir testo metu" style="margin:12px 0">
+ <defs><marker id="ar2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#e4572e"/></marker></defs>
+ <g font-family="Calibri,sans-serif" font-size="14" text-anchor="middle">
+  <text x="10" y="26" text-anchor="start" font-weight="700" fill="#1b998b" font-size="16">MOKYMAS (be etikečių)</text>
+  <g fill="#f3f4f6" stroke="#9ca3af">
+   <rect x="10" y="40" width="156" height="84" rx="10"/><rect x="186" y="40" width="156" height="84" rx="10"/><rect x="362" y="40" width="156" height="84" rx="10"/><rect x="538" y="40" width="156" height="84" rx="10"/>
+  </g>
+  <rect x="714" y="40" width="176" height="84" rx="10" fill="#e4572e"/>
+  <g fill="#1f2933">
+   <text x="88" y="68" font-weight="700">training.csv</text><text x="88" y="90">12 678 eilutės</text><text x="88" y="108" fill="#6b7280">po ~10 s</text>
+   <text x="264" y="68" font-weight="700">6 IMU stulpeliai</text><text x="264" y="90">standartizuoti</text><text x="264" y="108" fill="#6b7280">z = (x − μ) / σ</text>
+   <text x="440" y="68" font-weight="700">langai po 10 eilučių</text><text x="440" y="90">11 203 langai</text><text x="440" y="108" fill="#6b7280">kiekvienas 10 × 6</text>
+   <text x="616" y="68" font-weight="700">autoenkoderis</text><text x="616" y="90">mokosi atkurti</text><text x="616" y="108" fill="#6b7280">normalius langus</text>
+  </g>
+  <g fill="#fff"><text x="802" y="68" font-weight="700">slenkstis</text><text x="802" y="90">95 % mokymo klaidų</text><text x="802" y="108">viršutinė riba</text></g>
+  <g stroke="#e4572e" stroke-width="2.5" marker-end="url(#ar2)"><line x1="166" y1="82" x2="184" y2="82"/><line x1="342" y1="82" x2="360" y2="82"/><line x1="518" y1="82" x2="536" y2="82"/><line x1="694" y1="82" x2="712" y2="82"/></g>
+  <text x="10" y="196" text-anchor="start" font-weight="700" fill="#1b998b" font-size="16">TESTAS (etiketės tik vertinimui)</text>
+  <g fill="#f3f4f6" stroke="#9ca3af">
+   <rect x="10" y="210" width="156" height="84" rx="10"/><rect x="186" y="210" width="156" height="84" rx="10"/><rect x="362" y="210" width="156" height="84" rx="10"/>
+  </g>
+  <rect x="538" y="210" width="156" height="84" rx="10" fill="#e4572e"/>
+  <rect x="714" y="210" width="176" height="84" rx="10" fill="#1b998b"/>
+  <g fill="#1f2933">
+   <text x="88" y="238" font-weight="700">test.csv</text><text x="88" y="260">1 571 eilutė</text><text x="88" y="278" fill="#6b7280">po ~10 s</text>
+   <text x="264" y="238" font-weight="700">tas pats paruošimas</text><text x="264" y="260">tie patys μ, σ</text><text x="264" y="278" fill="#6b7280">1 228 langai</text>
+   <text x="440" y="238" font-weight="700">išmokytas modelis</text><text x="440" y="260">klaida kiekvienam</text><text x="440" y="278" fill="#6b7280">langui</text>
+  </g>
+  <g fill="#fff">
+   <text x="616" y="238" font-weight="700">klaida &gt; slenkstis?</text><text x="616" y="260">taip = anomalija</text><text x="616" y="278">ne = normalu</text>
+   <text x="802" y="238" font-weight="700">vertinimas</text><text x="802" y="260">palyginti su 39</text><text x="802" y="278">laiko žymų (TP, FP)</text>
+  </g>
+  <g stroke="#e4572e" stroke-width="2.5" marker-end="url(#ar2)"><line x1="166" y1="252" x2="184" y2="252"/><line x1="342" y1="252" x2="360" y2="252"/><line x1="518" y1="252" x2="536" y2="252"/><line x1="694" y1="252" x2="712" y2="252"/></g>
+  <path d="M802 124 L802 160 L616 160 L616 208" fill="none" stroke="#e4572e" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#ar2)"/>
+  <text x="710" y="154" fill="#e4572e" font-weight="700">ta pati reikšmė</text>
+  <text x="450" y="322" fill="#6b7280">Etiketės (39 laiko žymos) niekada nenaudojamos mokymui ar slenksčiui, tik paskutiniam žingsniui.</text>
+ </g>
+</svg>
+
+<!-- Q1 -->
+<div class="qbox" id="q1">
+<h3 class="rq">Q1. Kaip duomenys paduodami modeliui?</h3>
+<div class="short"><b>Trumpai:</b> modelis gauna ne vieną eilutę, o <b>10 iš eilės einančių eilučių</b>, t. y. 10 × 6 skaičių lentelę (60 skaičių). Prieš tai kiekvienas stulpelis „sunormuojamas“.</div>
+<p>Žingsniai, kuriuos atlieka kodas (<code>make_windows</code>, <code>run</code> <code>baseline_gru.ipynb</code> faile):</p>
+<ol>
+<li><b>Paimame 6 stulpelius.</b> Iš 14 stulpelių liekame su <code>ACC_x/y/z_RMS</code> ir <code>MAG_x/y/z_RMS</code>.</li>
+<li><b>Standartizuojame.</b> Kiekvienam stulpeliui atimame mokymo duomenų vidurkį ir dalijame iš jų standartinio nuokrypio: <code>z = (x − μ) / σ</code>. Kodėl: pagreitis svyruoja ~0–10, magnetinis laukas ~15–170, ir be normavimo didesnių skaičių stulpelis dominuotų klaidoje.</li>
+<li><b>Pjaustome į langus.</b> Imame eilutes 1–10, tada 2–11, tada 3–12 ir t. t. (langai persidengia, žingsnis 1 eilutė). Kiekvienas langas yra vienas modelio pavyzdys.</li>
+<li><b>Išmetame netinkamus langus.</b> Tuos, kuriuose yra eilutė be GPS fiksacijos / neigiamu aukščiu / per daug mėginių, ir tuos, kurių trukmė ilgesnė nei 1 val. ar laikas eina atgal (taip atsiduria tarp skirtingų įrašų).</li>
+<li><b>Gauname tenzorių.</b> Mokymui: 11 203 langai × 10 eilučių × 6 stulpeliai. Testui: 1 228 × 10 × 6.</li>
+</ol>
+<p><b>Tikras pavyzdys</b> iš testo failo (2021-01-21, pirma anomalija). Žymė faile yra 14:44:44. Žemiau 8 iš eilės eilutės (pilkos = prieš, oranžinė = dėžė apversta):</p>
+<table>
+<tr><th>Laikas</th><th class="n">ACC x</th><th class="n">ACC y</th><th class="n">ACC z</th><th class="n">MAG x</th><th class="n">MAG y</th><th class="n">MAG z</th></tr>
+<tr><td>14:44:14</td><td class="n">0,27</td><td class="n">1,63</td><td class="n">9,73</td><td class="n">27,35</td><td class="n">12,85</td><td class="n">25,11</td></tr>
+<tr><td>14:44:24</td><td class="n">0,25</td><td class="n">1,63</td><td class="n">9,72</td><td class="n">26,86</td><td class="n">13,11</td><td class="n">24,88</td></tr>
+<tr><td>14:44:34</td><td class="n">0,27</td><td class="n">1,64</td><td class="n">9,73</td><td class="n">27,02</td><td class="n">12,95</td><td class="n">24,66</td></tr>
+<tr><td>14:44:44 <span class="mute">(žymė)</span></td><td class="n">0,51</td><td class="n">1,58</td><td class="n">9,73</td><td class="n">26,49</td><td class="n">14,91</td><td class="n">24,66</td></tr>
+<tr style="background:color-mix(in srgb,var(--orange) 16%,transparent)"><td>14:44:54</td><td class="n">0,27</td><td class="n"><b>8,70</b></td><td class="n"><b>3,60</b></td><td class="n">12,44</td><td class="n"><b>59,74</b></td><td class="n">7,53</td></tr>
+<tr style="background:color-mix(in srgb,var(--orange) 16%,transparent)"><td>14:45:04</td><td class="n">0,53</td><td class="n"><b>9,23</b></td><td class="n"><b>1,99</b></td><td class="n">4,67</td><td class="n"><b>61,78</b></td><td class="n">4,41</td></tr>
+<tr style="background:color-mix(in srgb,var(--orange) 16%,transparent)"><td>14:45:14</td><td class="n">0,36</td><td class="n">9,18</td><td class="n">1,83</td><td class="n">8,60</td><td class="n">60,11</td><td class="n">17,62</td></tr>
+<tr style="background:color-mix(in srgb,var(--orange) 16%,transparent)"><td>14:45:24</td><td class="n">0,48</td><td class="n">9,28</td><td class="n">1,27</td><td class="n">9,41</td><td class="n">60,50</td><td class="n">19,00</td></tr>
+</table>
+<p>Gravitacija (~9,8) iš z ašies persikėlė į y ašį: dėžė apversta. Po standartizavimo (apytiksliai su mokymo μ ir σ) eilutė 14:44:44 yra beveik nulinė (−0,5; 0,0; 0,4; 0,2; −1,1; −0,6), o 14:44:54 jau ekstremali (−0,6; <b>3,7</b>; <b>−2,9</b>; −0,4; 1,0; −1,4). Būtent tokias lenteles (10 eilučių viena po kitos) modelis ir mato.</p>
+</div>
+
+<!-- Q2 -->
+<div class="qbox" id="q2">
+<h3 class="rq">Q2. Kas yra langai ir kodėl jų reikia?</h3>
+<div class="short"><b>Trumpai:</b> langas yra „trumpas filmukas“ vietoje „nuotraukos“. Anomalija (dėžės apvertimas, purtymas) yra <b>pokytis laike</b>, o pokytį mato tik tas, kas mato kelias eilutes iš eilės.</div>
+<ul>
+<li><b>Langas</b> = 10 iš eilės einančių eilučių (~100 s). Atitinka 60 skaičių vektorių ar 10 × 6 lentelę.</li>
+<li><b>Kodėl ne pavienė eilutė.</b> Eilutė „dėžė guli ant šono“ pati savaime yra normali, jei dėžė taip ilgai gulėjo. Anomalija yra <i>perėjimas</i> iš vienos padėties į kitą ir (arba) trumpas netvarkingas judėjimas. Langas mato prieš ir po.</li>
+<li><b>Triukšmo mažinimas.</b> Viena eilutė yra 8–10 s RMS; kelių eilučių seka yra patikimesnė.</li>
+<li><b>Straipsnyje</b> ilgesni langai padidino F1 apie 7–10 %.</li>
+<li><b>Svarbus sąžiningumas.</b> Pavienė eilutė irgi gali aptikti <i>neįprastą būseną</i> (pavyzdžiui, retai matytą orientaciją), todėl lango nauda turi būti išmatuota, ne tik tikima. Ją išmatavome (žr. Q7).</li>
+</ul>
+</div>
+
+<!-- Q3 -->
+<div class="qbox" id="q3">
+<h3 class="rq">Q3. Kodėl autoenkoderis?</h3>
+<div class="short"><b>Trumpai:</b> nes mokymo duomenys neturi etikečių, o autoenkoderiui jų nereikia: jis mokosi tik „kaip atrodo normalu“.</div>
+<ul>
+<li>Klasifikatoriui reikėtų pavyzdžių „normalu / anomalija“. Mes jų neturime.</li>
+<li>Autoenkoderis (žr. 5.1) išmoksta suspausti ir atkurti <i>normalius</i> duomenis. Neįprasti duomenys atkuriami blogiau, tad <b>atkūrimo klaida = anomalijos įvertis</b>.</li>
+<li>Tai ne vienintelis būdas. Kiti: PCA, kNN, GMM, OCSVM (straipsnyje jie buvo palyginimo metodai). Autoenkoderį renkamės, nes: (a) jį naudojo straipsnis, tad galime palyginti, (b) jį lengva pritaikyti sekoms (GRU).</li>
+</ul>
+</div>
+
+<!-- Q4 -->
+<div class="qbox" id="q4">
+<h3 class="rq">Q4. Kuo GRU autoenkoderis skiriasi nuo „paprasto“ autoenkoderio?</h3>
+<div class="short"><b>Trumpai:</b> paprastas (tankusis) autoenkoderis gauna <b>vieną ilgą skaičių vektorių</b>, o GRU autoenkoderis skaito eilutes <b>po vieną iš eilės</b> ir kaupia „atmintį“.</div>
+<table>
+<tr><th></th><th>Tankusis AE</th><th>GRU AE</th></tr>
+<tr><td>Įvestis</td><td>Vektorius. Viena eilutė (6 skaičiai) arba langas „ištiesintas“ į 60 skaičių</td><td>Seka: 10 žingsnių po 6 skaičius</td></tr>
+<tr><td>Kaip „mato“ laiką</td><td>Kiekvienas skaičius turi savo svorį. Žingsnio numerį žino tik pagal poziciją vektoriuje</td><td>Tie patys svoriai kiekviename žingsnyje, o slaptoji būsena <code>h</code> perneša informaciją į priekį</td></tr>
+<tr><td>Parametrų skaičius</td><td>Auga su lango ilgiu (langas 10, 60 → 30 → 15 → 30 → 60: 4 635; langas 20: 18 270)</td><td>Nuo lango ilgio nepriklauso (3 166 bet kuriam langui)</td></tr>
+<tr><td>Kur naudota</td><td>Straipsnio „edge“ (viena eilutė) ir „fog“ (sujungtos eilutės) modeliai</td><td>Nebuvo išbandyta straipsnyje</td></tr>
+</table>
+<p>Abu yra „autoenkoderis“: koduotojas suspaudžia, dekoderis atkuria, klaida = skirtumas. Skiriasi tik <b>kaip skaito įvestį</b>. Kaip tiksliai sujungti, žr. <b>Q11</b>. Ar GRU tikrai geresnis už tankųjį AE su ištiesintu langu, išmatavome: <b>žr. Q7</b>.</p>
+</div>
+
+<!-- Q5 -->
+<div class="qbox" id="q5">
+<h3 class="rq">Q5. Ar tikrai tiesiog apmokome autoenkoderį su „geru“ duomenimis, imame klaidos slenkstį, o ten, kur klaida didesnė, sakome „anomalija“? Bet mokymo duomenys nėra švarūs.</h3>
+<div class="short"><b>Trumpai:</b> taip, būtent taip. Etiketės naudojamos tik pabaigoje, rezultatui įvertinti. Mokymo duomenų nešvarumas kelia abejonių, todėl jo poveikį išmatavome (žemiau).</div>
+<ol>
+<li><b>Mokome</b> autoenkoderį visiems mokymo langams (11 203), minimizuodami atkūrimo klaidą.</li>
+<li><b>Skaičiuojame</b> klaidą kiekvienam mokymo langui ir imame <b>slenkstį</b> = 95 % kvantilis (95 % mokymo langų klaida mažesnė). Pagal konstrukciją 5 % mokymo langų virš slenksčio.</li>
+<li><b>Testuojame</b>: kiekvienam testo langui skaičiuojame klaidą. Jei didesnė už slenkstį, sakome „anomalija“.</li>
+<li><b>Tik tada</b> lyginame su 39 laiko žymomis ir skaičiuojame TP, FP, tikslumą, pilnumą.</li>
+</ol>
+<p><b>Apie „nešvarius“ mokymo duomenis.</b> Mokymo faile yra 77 atvejai, kai gravitacijos ašis keičiasi sesijos viduje. Ne visi jie būtinai yra anomalijos (dėžę galėjo tiesiog perstatyti), bet modelis juos išmoksta kaip normalius. Išmatavome, kiek tai kenkia: pašalinome visus mokymo langus, kuriuose keičiasi gravitacijos ašis, ir mokėme iš naujo.</p>
+{{B_READ}}
+</div>
+
+<!-- Q6 -->
+<div class="qbox" id="q6">
+<h3 class="rq">Q6. Kaip paduodami testo duomenys?</h3>
+<div class="short"><b>Trumpai:</b> lygiai taip pat kaip mokymo (tie pačių 6 stulpelių langai, normuoti <u>mokymo</u> μ ir σ), tik modelis nebemokomas, o iš jo skaitoma klaida.</div>
+<ol>
+<li>Tie patys 6 stulpeliai, ta pati standartizacija su <b>mokymo</b> duomenų μ ir σ (testo statistika nenaudojama).</li>
+<li>Tas pats pjaustymas į 10 eilučių langus (1 228 langai).</li>
+<li>Kiekvienas langas praeina per jau išmokytą modelį, gauname atkurtą langą ir klaidą (vidutinis kvadratinis skirtumas per 60 skaičių).</li>
+<li>Klaida &gt; slenkstis (0,089) → langas pažymimas.</li>
+</ol>
+<p><b>Tikras pavyzdys</b> (to paties įvykio langai, pagrindinis GRU modelis, slenkstis 0,089):</p>
+<table>
+<tr><th>Langas</th><th>Eilutės</th><th>Paskutinės eilutės laikas</th><th class="n">Klaida</th><th>Sprendimas</th></tr>
+<tr><td>37</td><td>37–46</td><td>14:44:34</td><td class="n">0,019</td><td>normalu</td></tr>
+<tr><td>38</td><td>38–47</td><td>14:44:44 (žymė)</td><td class="n">0,016</td><td>normalu</td></tr>
+<tr style="background:color-mix(in srgb,var(--orange) 16%,transparent)"><td>39</td><td>39–48</td><td>14:44:54 (pirma „apversta“ eilutė)</td><td class="n">0,486</td><td>anomalija</td></tr>
+<tr style="background:color-mix(in srgb,var(--orange) 16%,transparent)"><td>40</td><td>40–49</td><td>14:45:04</td><td class="n">0,999</td><td>anomalija</td></tr>
+<tr style="background:color-mix(in srgb,var(--orange) 16%,transparent)"><td>44</td><td>44–53</td><td>14:45:43</td><td class="n">1,781</td><td>anomalija</td></tr>
+<tr style="background:color-mix(in srgb,var(--orange) 16%,transparent)"><td>51</td><td>51–60</td><td>14:46:54</td><td class="n">0,268</td><td>anomalija</td></tr>
+</table>
+<p>Klaida šoktelėja būtent tada, kai į langą patenka pirma „apversta“ eilutė (48), išlieka didelė, kol ji yra lange (10 langų) ir lėtai krenta. Pastebėkite: <b>etiketės laikas (14:44:44) yra viena eilute ANKSČIAU</b> nei pirma matoma pakitusi eilutė. Todėl vertinime reikalinga ±1 minutės tolerancija (žr. Q8).</p>
+</div>
+
+<!-- Q7 -->
+<div class="qbox" id="q7">
+<h3 class="rq">Q7. Kam reikalingas rekurentinis modelis, jei galima vertinti kiekvieną eilutę atskirai ir lyginti su slenksčiu?</h3>
+<div class="short"><b>Trumpai:</b> reikia išmatuoti, ne tikėti. Tą ir padarėme: {{Q7_SHORT}}</div>
+<p><b>Teorija.</b> Eilutės modelis mato tik <i>būseną</i> („dėžė ant šono“), langas mato ir <i>pokytį</i> (iš vertikalios į gulinčią). Rekurentinis tinklas yra tik vienas būdas skaityti langą; tankusis AE su ištiesintu langu irgi mato pokytį.</p>
+<p><b>Eksperimentas.</b> Tos pačios testo eilutės ir tos pačios etiketės (eilutė laikoma „šalia anomalijos“, jei ±1 min. nuo žymos), trys seed. Matas: AUROC (0,5 = atsitiktinis, 1 = tobula) ir AUPRC (atsitiktinio lygis = „šalia anomalijos“ dalis). Skripte <code>deep_dive/context_check.py</code>.</p>
+{{A_TABLE}}
+{{A_READ}}
+</div>
+
+<!-- Q8 -->
+<div class="qbox" id="q8">
+<h3 class="rq">Q8. Kaip tai veikia, kai skaidome į langus, o anomalija yra viena laiko žyma?</h3>
+<div class="short"><b>Trumpai:</b> langas yra laiko intervalas, anomalija yra taškas. Langas „pataiko“, jei taškas patenka į intervalą, išplėstą po minutę į abi puses.</div>
+<p>Taisyklė (iš autorių <code>verify.py</code>): langas, kuris prasideda <i>t₀</i>, baigiasi <i>t₁</i>, pataiko į anomaliją <i>T</i>, jei <code>suapvalinta_žemyn(t₀) − 1 min ≤ T ≤ suapvalinta_aukštyn(t₁) + 1 min</code> (apvalinama iki minutės). Pavyzdžiui, mūsų langas 38 baigiasi 14:44:44, lygiai ties žyme, ir pataiko, nors klaida dar maža. Pataiko ir kiti langai aplink ją, tarp jų 39–51, kuriuose klaida didelė.</p>
+<p>Pasekmės: (1) vieną anomaliją „pataiko“ daug langų (lango ilgis + ~2 minutės tolerancijos), (2) ilgesnis langas „pataiko“ lengviau, todėl pateikiame ir griežtą variantą („end“: skaičiuojama tik paskutinė lango eilutė), (3) vertinama <b>anomalijomis</b>, ne langais: TP = kiek anomalijų aptikta bent vienu pažymėtu langu.</p>
+
+<div class="widget" id="wC">
+<h4>Interaktyvus langas C: langas ir laiko žymė</h4>
+<div class="ctl"><label>Lango ilgis L</label><input id="cL" type="range" min="1" max="20" value="10"><span id="cLv"></span></div>
+<div class="ctl"><label>Anomalijos laikas T</label><input id="cT" type="range" min="0" max="590" value="300" step="1"><span id="cTv"></span></div>
+<div class="ctl"><label>Pasirinkto lango pabaiga</label><input id="cE" type="range" min="0" max="59" value="30"><span id="cEv"></span></div>
+<div>Susiejimas: <label><input type="radio" name="cm" value="win" checked> visas langas (autorių)</label> <label><input type="radio" name="cm" value="end"> tik paskutinė eilutė</label></div>
+<canvas id="cC" style="height:230px"></canvas>
+<div class="stat" id="cS"></div>
+<p class="mute" style="font-size:15px">Eilutės kas 10 s (60 eilučių = 10 min.). Mėlynas stačiakampis = pasirinktas langas, šviesesnis = jo išplėtimas ±1 min. (suapvalintas), raudona linija = anomalija. Apatinė eilutė rodo, kurios lango pabaigos „pataiko“ (oranžinė) ir kurios ne (pilka).</p>
+</div>
+</div>
+
+<!-- Q9 -->
+<div class="qbox" id="q9">
+<h3 class="rq">Q9. Ar tada mokymo duomenys turi būti tokio paties datos formato?</h3>
+<div class="short"><b>Trumpai:</b> modelis laiko žymų <b>nemato</b> ir joms nereikalingos etiketės. Visos žymos tiesiog paverčiamos į tikrą datą ir laiką viena funkcija.</div>
+<ul>
+<li><b>Modelio įvestis.</b> Tik 6 skaičiai eilutėje. Laikas nėra požymis.</li>
+<li><b>Mokymas naudoja laiką tik dviem dalykams:</b> (1) eilučių tvarkai, (2) kad nesudarytume langų per didelius tarpus (&gt; 1 val.) ar atgal einantį laiką, nes tai skirtingi įrašai. Etikečių nereikia.</li>
+<li><b>Testas naudoja laiką papildomai</b> (3) susieti langus su anomalijų laiko žymomis, tik vertinimo metu.</li>
+<li><b>Formatų painiava yra failų defektas, ne metodo dalis.</b> Faile pasitaiko <code>2021-01-22 08:47:55</code>, <code>10-03-21 13:53</code> (DD-MM-YY) ir <code>2023-03-21 13:43:00</code>, kur „2023“ reiškia 23 kovo 2021. Viena funkcija <code>parse_ts</code> visus (mokymo, testo ir anomalijų failus) paverčia į teisingas datas, todėl formatas nebesvarbus.</li>
+</ul>
+</div>
+
+<!-- Q10 -->
+<div class="qbox" id="q10">
+<h3 class="rq">Q10. Kodėl vertinama būtent taip (atkūrimo klaida ir įvykių metrika)?</h3>
+<div class="short"><b>Trumpai:</b> nes turime tik 39 laiko žymas, ne eilučių etiketes, o laikas kovo mėnesį apvalintas iki minutės. Metrika yra straipsnio, kad rezultatai būtų palyginami. Ji turi ydų, apie jas žemiau.</div>
+<ul>
+<li><b>Atkūrimo klaida</b> = vidutinis kvadratinis skirtumas tarp lango ir jo atkūrimo per visus 60 skaičių: <code>klaida = (1/60) · Σ (xᵢ − x̂ᵢ)²</code>. Mažas skaičius = modelis „pažįsta“ langą.</li>
+<li><b>Kodėl įvykių metrika.</b> Etiketė yra taškas laike (Q8), todėl klausiame: „ar kiekviena anomalija buvo aptikta ir kiek klaidingų aliarmų?“. TP, FP, tikslumas, pilnumas, F1 (žr. 4.4).</li>
+<li><b>Kodėl ±1 min.</b> Žymos grubios (kovo laikas apvalintas, pirma matoma pakitusi eilutė gali būti po žymos).</li>
+<li><b>Ydos.</b> Iš eilės einantys klaidingi aliarmai sujungiami į vieną FP, o pataikymas dosnus, todėl detektorius „visada anomalija“ gauna F1 0,95 (6.3). Todėl šį F1 naudojame tik palyginti su straipsniu ir papildomai žiūrime AUROC.</li>
+<li><b>Papildomi matai</b>, kurie nepriklauso nuo slenksčio: AUROC ir AUPRC (6.3 ir Q7).</li>
+</ul>
+</div>
+
+<!-- Q11 -->
+<div class="qbox" id="q11">
+<h3 class="rq">Q11. Kas yra GRU autoenkoderis? (autoenkoderį ir GRU atskirai žinau, bet kaip jie sujungti?)</h3>
+<div class="short"><b>Trumpai:</b> tai paprastas autoenkoderis, kurio koduotojas ir dekoderis yra GRU, o įvestis yra seka. Visa seka suspaudžiama į <b>vieną mažą vektorių</b>, iš kurio dekoderis turi atkurti <b>visą seką</b>.</div>
+<p>Kelias per tinklą vienam langui (mūsų <code>SeqAE</code>):</p>
+<pre>langas x:           10 žingsnių × 6 reikšmės        (10×6 lentelė)
+      │
+GRU koduotojas      skaito žingsnius 1…10, slaptoji būsena h (16 skaičių)
+      │             pasiliekame tik PASKUTINĘ būseną h₁₀            → 16
+Linear 16→8                                                         → z (8 skaičiai)   ← butelio kakliukas
+      │
+Linear 8→16         tas pats vektorius nukopijuojamas į visus 10 žingsnių → 10 × 16
+      │
+GRU dekoderis       kiekviename žingsnyje įvestis = tas pats vektorius,
+      │             slaptoji būsena 16, išvestis 10 × 16
+Linear 16→6         taikoma kiekviename žingsnyje                   → 10 × 6
+      │
+atkurtas langas x̂   klaida = vidurkis((x − x̂)²) per visus 60 skaičių</pre>
+<pre>_, h = self.enc(x)                    # h: paskutinė koduotojo slaptoji būsena
+z = self.to_z(h[-1])                  # 8 skaičiai, aprašantys visą langą
+y, _ = self.dec(self.from_z(z).unsqueeze(1).repeat(1, x.shape[1], 1))   # tas pats vektorius kiekvienam žingsniui
+return self.out(y)                    # 10 × 6 atkūrimas</pre>
+<h3>Kuo skiriasi nuo to, ką jau žinai</h3>
+<ul>
+<li><b>Butelio kakliukas yra visos sekos santrauka.</b> Įeina 60 skaičių, išeina 8. Dekoderis turi atkurti visas 10 eilučių tik iš tų 8 skaičių, todėl z turi užkoduoti lango <i>trajektoriją</i>.</li>
+<li><b>Dekoderis negauna nei ankstesnio atkurto žingsnio, nei tikrosios įvesties</b> (vadinamasis „repeat-vector“ variantas). Jei dekoderis matytų tikrą ankstesnę eilutę, jis galėtų ją tiesiog nukopijuoti ir kakliukas netektų prasmės.</li>
+<li><b>Svoriai bendri visiems žingsniams.</b> Todėl parametrų skaičius (3 166) nepriklauso nuo lango ilgio. Sudėtis: GRU koduotojas 1 152, Linear 16→8 136, Linear 8→16 144, GRU dekoderis 1 632, Linear 16→6 102.</li>
+</ul>
+<h3>Kodėl tai tinka anomalijoms</h3>
+<p>Normalūs langai turi dėsningą struktūrą: gravitacija lieka toje pačioje ašyje, magnetinis laukas kinta sklandžiai. 8 skaičių pakanka tokiai struktūrai atkurti. Langas, kuriame dėžė apverčiama pusiaukelėje, turi du skirtingus režimus viename lange. 8 skaičiai jo nebeaprašo, atkūrimas prastas, o klaida šoktelėja (Q6 pavyzdyje nuo 0,016 iki 0,486).</p>
+<div class="box"><b class="t">Ką rodo eksperimentai (Q7)</b>Beveik visa nauda ateina iš <b>lango</b>, ne iš rekurentiškumo: tankusis AE su ištiesintu 10 eilučių langu gauna AUROC 0,82, o GRU AE 0,84. GRU yra kompaktiškas ir šiek tiek geresnis būdas skaityti langą, bet ne būtinas.</div>
+</div>
+
+<!-- Q12 -->
+<div class="qbox" id="q12">
+<h3 class="rq">Q12. Ar visur skaidrėse, kur rodomos anomalijos, tai yra testo duomenys?</h3>
+<div class="short"><b>Trumpai:</b> taip. 39 pažymėtos anomalijos yra tik testo faile, tad kiekviena skaidrė, kuri rodo ar skaičiuoja anomalijas, naudoja testo duomenis.</div>
+<table>
+<tr><th>Skaidrė (dabartinė tvarka)</th><th>Kas rodoma</th><th>Duomenys</th></tr>
+<tr><td>3. Duomenys</td><td>Skydelis „39 pažymėtos anomalijos“</td><td>Testas</td></tr>
+<tr><td>5. Anomalijos: dėžė apverčiama ir purtoma, kairė</td><td>20 min. ištrauka su raudonomis anomalijų linijomis; „26 iš 39“</td><td>Testas (<code>test.csv</code>, 2021-01-21, 15:00–15:20)</td></tr>
+<tr><td>6. GRU baseline</td><td>F1, tikslumas, pilnumas, 36 iš 39, 13 klaidingų aliarmų, 48 % pažymėta</td><td>Testas. Mokymo duomenys naudojami tik modeliui ir slenksčiui</td></tr>
+<tr><td>8. Priedas</td><td>Klaidų laiko eilutė su anomalijų linijomis</td><td>Testas</td></tr>
+</table>
+<p><b>Kas skaidrėse nėra apie pažymėtas anomalijas:</b></p>
+<ul>
+<li>Skaidrė 5, dešinė (sesijos): maišo mokymo ir testo sesijas ir anomalijų nerodo. „22 vs 6 µT“ skaičiuota iš abiejų.</li>
+<li>Skaidrė 7: „~77 apvertimai“ yra gravitacijos ašies pasikeitimai <i>mokymo</i> duomenyse. Tai ne pažymėtos anomalijos, nes mokymo duomenys etikečių neturi.</li>
+<li>Skaidrė 2: mokymo ir testo pasiskirstymai, anomalijos nežymimos.</li>
+</ul>
+<div class="box warn"><b class="t">Pastaba skaidrėms</b>Skaidrėse prie anomalijų žodžio „testo“ nėra, todėl klausytojas gali pagalvoti kitaip. Verta pridėti: skaidrėje 3 „39 pažymėtos <i>testo</i> anomalijos“, skaidrės 5 antraštėje „Testo duomenys, 2021-01-21“, skaidrės 8 paaiškinime „Testo duomenys:“ pradžioje.</div>
+</div>
+
+<!-- Q13 -->
+<div class="qbox" id="q13">
+<h3 class="rq">Q13. Kas yra „ADM autoenkoderis“ (ADM-EDGE ir ADM-FOG) straipsnyje?</h3>
+<div class="short"><b>Trumpai:</b> ADM = <i>Anomaly Detection Module</i> (anomalijų aptikimo modulis). Tai <b>ne ypatingas autoenkoderio tipas</b>, o vieta, kur straipsnio paprastas tankusis autoenkoderis veikia sistemoje: <b>EDGE</b> = pačiame jutiklio įrenginyje, <b>FOG</b> = serveryje mobiliajame tinkle.</div>
+<ul>
+<li><b>Modelis abiem atvejais tas pats.</b> Tankusis (pilnai sujungtas) autoenkoderis su ReLU, 1, 3 arba 5 paslėptais sluoksniais (žr. 4.2). Skiriasi tik <i>ką jis mato</i> ir <i>kur veikia</i>.</li>
+<li><b>ADM-EDGE</b> mato <b>vieną eilutę</b> (GPS reikšmės + IMU RMS; su GPS 13 požymių, be GPS lat/lon 11). Pavyzdžiui, 1 sluoksnio variantas su 11 požymių yra 11 → 5 → 11 (126 parametrai).</li>
+<li><b>ADM-FOG</b> mato <b>paskutines L eilučių, sujungtas į vieną ilgą vektorių</b> (L = 2…20), ir turi 3 ar 5 paslėptus sluoksnius. Tai yra tai, ką mes savo tyrime vadiname „tankiuoju AE su ištiesintu langu“.</li>
+</ul>
+<table>
+<tr><th></th><th>ADM-EDGE</th><th>ADM-FOG</th></tr>
+<tr><td>Kur veikia</td><td>Įrenginyje (ARM Cortex-M0+, 16 MHz, 32 KB RAM, 256 KB flash)</td><td>Serveryje operatoriaus tinkle (TensorFlow, Python)</td></tr>
+<tr><td>Įvestis</td><td>Viena eilutė</td><td>Paskutinės L eilučių (L = 2…20)</td></tr>
+<tr><td>Mokymas</td><td>Nemokomas įrenginyje: išmokomas serveryje, svoriai eksportuojami į C kodą (antraštės failą)</td><td>Mokomas ir veikia serveryje</td></tr>
+<tr><td>Dydis</td><td>6 080 B (1 sluoksnis), 6 524 B (3), 8 278 B (5), apie 2–3 % flash atminties</td><td>Apribojimų nėra (serveris)</td></tr>
+<tr><td>Atsakymo laikas</td><td>Maždaug vienas matavimo intervalas (~10 s); jokio laukimo</td><td>Reikia L eilučių, todėl vėluoja ~L intervalų; tinklo vėlavimas dar prideda</td></tr>
+<tr><td>F1 straipsnyje (be GPS stulpelių)</td><td>0,69–0,70</td><td>iki 0,82 (L = 17)</td></tr>
+</table>
+<h3>Kaip abu bendradarbiauja</h3>
+<p>EDGE modelis kiekvienai eilutei duoda sprendimą ir <b>pasitikėjimo įvertį C</b> (sigmoidė nuo „klaida − slenkstis“, normaliems taškams paverčiama į 1 − C; todėl C yra nuo 0,5, kai klaida lygiai ties slenksčiu, iki 1, kai sprendimas labai tikras). Jei C mažesnis nei 0,75, sprendimas perduodamas FOG modeliui, kuris mato ilgesnį kontekstą ir gali jį pataisyti. Tai kompromisas tarp greičio (EDGE) ir tikslumo (FOG).</p>
+<h3>Kur čia mūsų darbas</h3>
+<ul>
+<li>Mūsų tankusis AE su viena eilute ir 11 stulpelių = <b>ADM-EDGE</b> atkartojimas (F1 0,70 vs jų 0,693).</li>
+<li>Mūsų tankusis AE su ištiesintu langu (Q7 lentelė) yra artimas <b>ADM-FOG</b> (tas pats modelio tipas, 3 paslėpti sluoksniai).</li>
+<li>Mūsų <b>GRU AE</b> yra ADM-FOG variantas, kuriame lango skaitymą atlieka rekurentinis tinklas vietoje ištiesinto vektoriaus (Q11). Straipsnis rekurentinių tinklų neišbandė.</li>
+</ul>
+</div>
+
+<!-- Q14 -->
+<div class="qbox" id="q14">
+<h3 class="rq">Q14. Kas yra „sesijos“ ir ar jos naudojamos? (juk čia ne vienas tolydus važiavimas)</h3>
+<div class="short"><b>Trumpai:</b> teisingai, vieno važiavimo nėra. Duomenys yra daug atskirų įrašų. „Sesija“ yra mano terminas tokiam įrašui: eilutės be &gt; 5 min. tarpo ir be laiko šuolio atgal. Modelis sesijų <b>nenaudoja</b>, jos reikalingos tik analizei.</div>
+<ul>
+<li><b>Kiek:</b> mokyme 84 sesijos (9 dienos), teste 21 (8 dienos). Tipinė sesija ~70 eilučių (~13 min.), didžiausia mokyme 3 579 eilutės (~14 val.).</li>
+<li><b>Sausis</b>: 13 mokymo sesijų yra važiavimai (GPS greitis ≠ 0). <b>Kovas</b>: greitis visada 0, o kas tai per įrašai (stovėjimas ar judėjimas), iš duomenų nežinome.</li>
+<li><b>Langai sesijų neatsižvelgia.</b> Langas tinka, jei neturi netinkamų eilučių ir trunka ≤ 1 val. (autorių taisyklė), todėl 98 iš 11 203 mokymo langų (0,9 %) ir 18 iš 1 228 testo langų (1,5 %) kerta dviejų sesijų ribą. Tai nedidelė silpnoji vieta; ją ištaisytų langų pjaustymas tik sesijos viduje.</li>
+<li><b>Kur sesijos svarbios supratimui:</b> magnetinio lauko lygis kinta nuo sesijos prie sesijos (22 µT tarp sesijų prieš ~6 µT sesijos viduje), o anomalijos yra tik 10 iš 21 testo sesijų (sausio 21 d. ir kovo 21–23 d.). Todėl nežinome, ar modelis aptinka įvykius, ar tik „neramias“ sesijas (6.4 dalis).</li>
+</ul>
+</div>
